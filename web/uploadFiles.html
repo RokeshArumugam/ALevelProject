@@ -1,0 +1,298 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/eel.js"></script>
+		<script defer type="text/javascript" src="js/main.js"></script>
+		<script src="https://kit.fontawesome.com/4b3b9ce2b0.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="css/main.css">
+		<script>
+			let fileInput
+			let docs = []
+			function inputFile() {
+				for (let file of fileInput.files) {
+   					let freader = new FileReader()
+   					freader.onload = function() {
+   						let img = document.createElement("img")
+   						img.src = this.result
+   						img.dataset.ext = file.name.split(".").pop()
+   						previewCont.appendChild(img)
+						revaluateButtonAbleness()
+   					}
+					freader.readAsDataURL(file)
+				}
+			}
+			function revaluateButtonAbleness() {
+				if (previewCont.querySelectorAll(":scope > *").length > 0) {
+					nextButton.classList.remove("disabled")
+				} else {
+					nextButton.classList.add("disabled")
+				}
+				if (previewCont.querySelectorAll(":scope > img").length > 0) {
+					newDocButton.classList.remove("disabled")
+				} else {
+					newDocButton.classList.add("disabled")
+				}
+			}
+			function createNewDoc() {
+				let imgs = previewCont.querySelectorAll(":scope > img")
+				if (imgs.length > 0) {
+    				let divDoc = document.createElement("div")
+    				divDoc.classList.add("doc")
+   					let closeButton = document.createElement("div")
+   					closeButton.classList.add("closeButton")
+   					closeButton.addEventListener("click", e => {
+   						let div = e.target.parentElement
+   						div.parentElement.removeChild(div)
+						revaluateButtonAbleness()
+   					})
+   					divDoc.appendChild(closeButton)
+   					
+    				let divDocImgCont = document.createElement("div")
+   					divDocImgCont.classList.add("docImgCont")
+    				imgs.forEach((img) => {
+    					divDocImgCont.appendChild(img)
+    				})
+    				divDoc.appendChild(divDocImgCont)
+    				
+    				let label = document.createElement("label")
+    				label.classList.add("docLabel")
+					label.innerText = "Save"
+					label.addEventListener("click", e => {
+						eel.pickSaveLocation()
+					})
+    				divDoc.appendChild(label)
+    				previewCont.appendChild(divDoc)
+    			}
+				revaluateButtonAbleness()
+			}
+			function saveDocs() {
+				createNewDoc()
+				document.querySelectorAll(".doc label").forEach((el) => {
+					el.classList.add("visible")
+				})
+				nextButton.setAttribute("onclick", "submitDocs()")
+			}
+			function submitDocs() {
+				document.querySelectorAll(".docImgCont").forEach((div) => {
+    				let newDocImgs = []
+    				div.querySelectorAll("img").forEach((img) => {
+    					newDocImgs.push([img.dataset.ext, img.src])
+    				})
+					docs.push([div.querySelector(":scope + label"), newDocImgs])
+				})
+				eel.inputDocuments(docs)
+			}
+			function loaded() {
+				newDocButton = document.querySelector("#createNewDoc")
+				nextButton = document.querySelector("#next")
+				fileInput = document.querySelector("#fileInput")
+				previewCont = document.querySelector(".previewImageContainer")
+    		}
+   		</script>
+		<style>
+			main {
+				padding-left: 2em;
+				padding-right: 2em;
+			}
+			.buttonContainer {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				grid-column-gap: 2em;
+				margin-bottom: 1em;
+			}
+			.buttonContainer a {
+				text-decoration: none;
+				padding: 1em;
+				border-radius: 5px;
+				color: white;
+				display: grid;
+				place-items: center;
+				text-align: center;
+				font-weight: bold;
+				transition-duration: 0.5s;
+				cursor: pointer;
+			}
+			.buttonContainer a:not(.disabled):hover {
+				transform: scale(1.05);
+			}
+			.buttonContainer a:nth-child(1) {
+				grid-column: 2;
+				background-color: blue;
+			}
+			.buttonContainer a:nth-child(2) {
+				background-color: limegreen;
+			}
+			.buttonContainer a.disabled {
+				background-color: grey;
+				color: lightgrey;
+				pointer-events: none;
+			}
+			#fileInputBox {
+				position: relative;
+				flex-grow: 1;
+				align-self: stretch;
+				border-radius: 10px;
+				box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+				transition-duration: 0.7s;
+				overflow: auto;
+			}
+			input[type="file"] {
+				display: none;
+			}
+			.fileLabel {
+				position: absolute;
+				border-radius: inherit;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				color: lightblue;
+				display: none;
+				font-size: 1.5em;
+				font-weight: bold;
+				transition-duration: 0.5s;
+				display: grid;
+				place-items: center;
+				text-align: center;
+			}
+			.fileLabel:hover, .previewImageContainer:not(:empty) + .fileLabel:hover {
+				color: blue;
+				opacity: 1;
+			}
+			.previewImageContainer:not(:empty) + .fileLabel {
+				opacity: 0;
+			}
+			.previewImageContainer {
+				--imgWidth: 100px;
+				--divWidth: 150px;
+				padding: 1em;
+				display: grid;
+				justify-items: center;
+				grid-template-columns: repeat(auto-fill, minmax(var(--divWidth), 1fr));
+				grid-gap: 1em;
+			}
+			.previewImageContainer > * {
+				z-index: 1;
+			}
+			.doc {
+				position: relative;
+				--divSpace: calc(var(--divWidth) - var(--imgWidth));
+				width: var(--divWidth);
+				height: calc(var(--imgWidth) + 2.5em);
+				max-width: var(--divWidth);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.docImgCont {
+				position: relative;
+				width: 100%;
+				height: var(--imgWidth);
+			}
+			.docImgCont img {
+				position: absolute;
+			}
+			.docImgCont img:nth-last-child(n+4) {
+				box-shadow: none;
+			}
+			.docImgCont img:nth-last-child(2) {
+				right: calc(var(--divSpace) / 2);
+				z-index: 1;
+			}
+			.docImgCont img:nth-last-child(1) {
+				right: 0%;
+				z-index: 2;
+			}
+			.doc .closeButton {
+				position: absolute;
+				width: 1em;
+				height: 1em;
+				background-color: red;
+				left: 0%;
+				top: 0%;
+				transform: translate(-50%, -50%);
+				display: grid;
+				border-radius: 50%;
+				color: white;
+				z-index: 1;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 200ms;
+				cursor: pointer;
+			}
+			.doc:hover .closeButton {
+				opacity: 1;
+				pointer-events: auto;
+			}
+			.doc .closeButton::before, .doc .closeButton::after {
+				content: "";
+				position: absolute;
+				width: 70%;
+				height: 10%;
+				top: 50%;
+				left: 50%;
+				background-color: white;
+				transform-origin: center center;
+				border-radius: 1em;
+			}
+			.doc .closeButton::before {
+				transform: translate(-50%, -50%) rotate(45deg);
+			}
+			.doc .closeButton::after {
+				transform: translate(-50%, -50%) rotate(-45deg);
+			}
+			.docLabel {
+				pointer-events: none;
+				font-size: 0.8em;
+				width: 7em;
+				padding: 0.5em;
+				text-align: center;
+				margin-top: auto;
+				background-color: skyblue;
+				border-radius: 3em;
+				color: white;
+				font-weight: bold;
+				transform: scale(0);
+				text-transform: uppercase;
+				transition: 200ms;
+				box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+			}
+			.docLabel.visible {
+				transform: scale(1);
+			}
+			.previewImageContainer img {
+				height: var(--imgWidth);
+				width: var(--imgWidth);
+				border-radius: 10px;
+				box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+				background-size: cover;
+				transform: scale(0);
+				animation: pop-in 300ms forwards;
+			}
+			
+			@keyframes pop-in {
+				0% {
+					opacity: 0;
+					transform: scale(0);
+				}
+				100% {
+					opacity: 1;
+					transform: scale(1);
+				}
+			}
+		</style>
+	</head>
+	<body onload="document.querySelector('body').classList.add('loaded'); loaded();">
+		<header><a onclick="back()"><i class="fas fa-arrow-circle-left"></i></a><h1>Please pick a file</h1></header>
+		<main>
+			<div class="buttonContainer">
+				<a id="createNewDoc" class="disabled" onclick="createNewDoc()">Add files for another document</a>
+				<a id="next" class="disabled" onclick="saveDocs()">Next</a>
+			</div>
+    		<div id="fileInputBox">
+    			<input id="fileInput" name="fileInput" multiple oninput="inputFile()" type="file" accept="image/*">
+    			<div class="previewImageContainer"></div>
+    			<label class="fileLabel" for="fileInput">Choose a file</label>
+    		</div>
+		</main>
+	</body>
+</html>

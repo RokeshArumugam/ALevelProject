@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title>Handwriting Recognition AI</title>
+		<script type="text/javascript" src="eel.js"></script>
+		<script defer type="text/javascript" src="js/main.js"></script>
+		<link rel="stylesheet" href="css/main.css">
+		<style>
+			.menuButtonContainer {
+				flex-grow: 1;
+				min-height: calc(5em * 5);
+				max-height: calc(5em * 6);
+				margin: 1em 0em;
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
+				justify-content: space-between;
+				width: 70%;
+				min-width: 200px;
+				max-width: 500px;
+			}
+			.menuButton {
+				border-radius: 0.5em;
+			}
+			.menuButton {
+				text-decoration: none;
+				height: 5em;
+				display: grid;
+				place-items: center;
+				background-color: white;
+				color: grey;
+				font-size: 1.2em;
+				font-weight: bold;
+				box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+				position: relative;
+				transition: transform 150ms, box-shadow 150ms;
+			}
+			.menuButton:hover {
+				transform: scale(1.05);
+				box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.15);
+			}
+		</style>
+	</head>
+	<body onload="document.querySelector('body').classList.add('loaded')">
+		<header><h1>Handwriting to Text</h1></header>
+		<main>
+			<div class="menuButtonContainer">
+    			<a class="menuButton" href="uploadFiles.html">Convert Files</a>
+    			<a class="menuButton">Instructions</a>
+    			<a class="menuButton">Settings</a>
+    			<a class="menuButton">View Conversion History</a>
+			</div>
+		</main>
+	</body>
+</html>
