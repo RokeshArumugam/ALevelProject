@@ -55,7 +55,7 @@
     				
     				let label = document.createElement("label")
     				label.classList.add("docLabel")
-					label.innerText = "Save"
+					label.innerText = "SAVE"
 					label.addEventListener("click", e => {
 						eel.pickSaveLocation()
 					})
@@ -72,14 +72,16 @@
 				nextButton.setAttribute("onclick", "submitDocs()")
 			}
 			function submitDocs() {
-				document.querySelectorAll(".docImgCont").forEach((div) => {
+				document.querySelectorAll(".doc").forEach((doc) => {
     				let newDocImgs = []
-    				div.querySelectorAll("img").forEach((img) => {
+    				doc.querySelectorAll("img").forEach((img) => {
     					newDocImgs.push([img.dataset.ext, img.src])
     				})
-					docs.push([div.querySelector(":scope + label"), newDocImgs])
+					docs.push([doc.querySelector("label").innerText, newDocImgs])
 				})
+				console.log(docs)
 				eel.inputDocuments(docs)
+				eel.convertDocuments()
 			}
 			function loaded() {
 				newDocButton = document.querySelector("#createNewDoc")
@@ -252,7 +254,6 @@
 				color: white;
 				font-weight: bold;
 				transform: scale(0);
-				text-transform: uppercase;
 				transition: 200ms;
 				box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
 			}

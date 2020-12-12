@@ -12,4 +12,4 @@ def readText(imgPath):
 	# '-l eng'	  for using the English language
 	# '--oem 1' for using LSTM OCR Engine
 	text = pytesseract.image_to_string(im, config=('-l eng --oem 1 --psm 3'))
-	print(text)
+	return text
