@@ -1,0 +1,190 @@
+main {
+	padding-left: 2em;
+	padding-right: 2em;
+}
+.buttonContainer {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-column-gap: 2em;
+	margin-bottom: 1em;
+}
+.buttonContainer a {
+	text-decoration: none;
+	padding: 1em;
+	border-radius: 5px;
+	color: white;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	font-weight: bold;
+	transition-duration: 0.5s;
+	cursor: pointer;
+}
+.buttonContainer a:not(.disabled):hover {
+	transform: scale(1.05);
+}
+.buttonContainer a:nth-child(1) {
+	grid-column: 2;
+	background-color: blue;
+}
+.buttonContainer a:nth-child(2) {
+	background-color: limegreen;
+}
+.buttonContainer a.disabled {
+	background-color: grey;
+	color: lightgrey;
+	pointer-events: none;
+}
+#fileInputBox {
+	position: relative;
+	flex-grow: 1;
+	align-self: stretch;
+	border-radius: 10px;
+	box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+	transition-duration: 0.7s;
+	overflow: auto;
+}
+input[type="file"] {
+	display: none;
+}
+.fileLabel {
+	position: absolute;
+	border-radius: inherit;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	color: lightblue;
+	display: none;
+	font-size: 1.5em;
+	font-weight: bold;
+	transition-duration: 0.5s;
+	display: grid;
+	place-items: center;
+	text-align: center;
+}
+.fileLabel:hover, .previewImageContainer:not(:empty) + .fileLabel:hover {
+	color: blue;
+	opacity: 1;
+}
+.previewImageContainer:not(:empty) + .fileLabel {
+	opacity: 0;
+}
+.previewImageContainer {
+	--imgWidth: 100px;
+	--divWidth: 150px;
+	padding: 1em;
+	display: grid;
+	justify-items: center;
+	grid-template-columns: repeat(auto-fill, minmax(var(--divWidth), 1fr));
+	grid-gap: 1em;
+}
+.previewImageContainer > * {
+	z-index: 1;
+}
+.doc {
+	position: relative;
+	--divSpace: calc(var(--divWidth) - var(--imgWidth));
+	width: var(--divWidth);
+	height: calc(var(--imgWidth) + 2.5em);
+	max-width: var(--divWidth);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.docImgCont {
+	position: relative;
+	width: 100%;
+	height: var(--imgWidth);
+}
+.docImgCont img {
+	position: absolute;
+}
+.docImgCont img:nth-last-child(n+4) {
+	box-shadow: none;
+}
+.docImgCont img:nth-last-child(2) {
+	right: calc(var(--divSpace) / 2);
+	z-index: 1;
+}
+.docImgCont img:nth-last-child(1) {
+	right: 0%;
+	z-index: 2;
+}
+.doc .closeButton {
+	position: absolute;
+	width: 1em;
+	height: 1em;
+	background-color: red;
+	left: 0%;
+	top: 0%;
+	transform: translate(-50%, -50%);
+	display: grid;
+	border-radius: 50%;
+	color: white;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 200ms;
+	cursor: pointer;
+}
+.doc:hover .closeButton {
+	opacity: 1;
+	pointer-events: auto;
+}
+.doc .closeButton::before, .doc .closeButton::after {
+	content: "";
+	position: absolute;
+	width: 70%;
+	height: 10%;
+	top: 50%;
+	left: 50%;
+	background-color: white;
+	transform-origin: center center;
+	border-radius: 1em;
+}
+.doc .closeButton::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+.doc .closeButton::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+.docLabel {
+	pointer-events: none;
+	font-size: 0.8em;
+	width: 7em;
+	padding: 0.5em;
+	text-align: center;
+	margin-top: auto;
+	background-color: skyblue;
+	border-radius: 3em;
+	color: white;
+	font-weight: bold;
+	transform: scale(0);
+	text-transform: uppercase;
+	transition: 200ms;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+.docLabel.visible {
+	transform: scale(1);
+}
+.previewImageContainer img {
+	height: var(--imgWidth);
+	width: var(--imgWidth);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	background-size: cover;
+	transform: scale(0);
+	animation: pop-in 300ms forwards;
+}
+
+@keyframes pop-in {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
