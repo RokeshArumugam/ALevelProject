@@ -1,19 +1,10 @@
-let fileInput
+let newDocButton = document.querySelector("#createNewDoc")
+let nextButton = document.querySelector("#next")
+let fileInput = document.querySelector("#fileInput")
+let previewCont = document.querySelector(".previewImageContainer")
 let docs = []
-function inputFile() {
-	for (let file of fileInput.files) {
-		let freader = new FileReader()
-		freader.onload = function() {
-			let img = document.createElement("img")
-			img.src = this.result
-			img.dataset.ext = file.name.split(".").pop()
-			previewCont.appendChild(img)
-			revaluateButtonAbleness()
-		}
-		freader.readAsDataURL(file)
-	}
-}
-function revaluateButtonAbleness() {
+
+previewCont.addEventListener("DOMSubtreeModified", e => {
 	if (previewCont.querySelectorAll(":scope > *").length > 0) {
 		nextButton.classList.remove("disabled")
 	} else {
@@ -24,38 +15,52 @@ function revaluateButtonAbleness() {
 	} else {
 		newDocButton.classList.add("disabled")
 	}
+})
+
+function inputFile() {
+	for (let file of fileInput.files) {
+		let freader = new FileReader()
+		freader.onload = function() {
+			let img = document.createElement("img")
+			img.src = this.result
+			img.dataset.ext = file.name.split(".").pop()
+			previewCont.appendChild(img)
+		}
+		freader.readAsDataURL(file)
+	}
 }
 function createNewDoc() {
 	let imgs = previewCont.querySelectorAll(":scope > img")
-	if (imgs.length > 0) {
-		let divDoc = document.createElement("div")
-		divDoc.classList.add("doc")
-		let closeButton = document.createElement("div")
-		closeButton.classList.add("closeButton")
-		closeButton.addEventListener("click", e => {
-			let div = e.target.parentElement
-			div.parentElement.removeChild(div)
-			revaluateButtonAbleness()
+	let divDoc = document.createElement("div")
+	divDoc.classList.add("doc")
+	let closeButton = document.createElement("div")
+	closeButton.classList.add("closeButton")
+	closeButton.addEventListener("click", e => {
+		let div = e.target.parentElement
+		div.parentElement.removeChild(div)
+	})
+	divDoc.appendChild(closeButton)
+	
+	let divDocImgCont = document.createElement("div")
+	divDocImgCont.classList.add("docImgCont")
+	imgs.forEach((img) => {
+		divDocImgCont.appendChild(img)
+	})
+	divDoc.appendChild(divDocImgCont)
+	
+	let label = document.createElement("label")
+	label.classList.add("docLabel")
+	label.innerText = "SAVE"
+	label.addEventListener("click", e => {
+		eel.pickSaveLocation()(function (locs) {
+			if (locs[0]) {
+				label.dataset.path = locs[0]
+				label.innerText = locs[1]
+			}
 		})
-		divDoc.appendChild(closeButton)
-		
-		let divDocImgCont = document.createElement("div")
-		divDocImgCont.classList.add("docImgCont")
-		imgs.forEach((img) => {
-			divDocImgCont.appendChild(img)
-		})
-		divDoc.appendChild(divDocImgCont)
-		
-		let label = document.createElement("label")
-		label.classList.add("docLabel")
-		label.innerText = "SAVE"
-		label.addEventListener("click", e => {
-			eel.pickSaveLocation()
-		})
-		divDoc.appendChild(label)
-		previewCont.appendChild(divDoc)
-	}
-	revaluateButtonAbleness()
+	})
+	divDoc.appendChild(label)
+	previewCont.appendChild(divDoc)
 }
 function saveDocs() {
 	createNewDoc()
@@ -70,15 +75,8 @@ function submitDocs() {
 		doc.querySelectorAll("img").forEach((img) => {
 			newDocImgs.push([img.dataset.ext, img.src])
 		})
-		docs.push([doc.querySelector("label").innerText, newDocImgs])
+		docs.push([doc.querySelector("label").dataset.path, newDocImgs])
 	})
-	console.log(docs)
 	eel.inputDocuments(docs)
 	eel.convertDocuments()
-}
-function loaded() {
-	newDocButton = document.querySelector("#createNewDoc")
-	nextButton = document.querySelector("#next")
-	fileInput = document.querySelector("#fileInput")
-	previewCont = document.querySelector(".previewImageContainer")
 }

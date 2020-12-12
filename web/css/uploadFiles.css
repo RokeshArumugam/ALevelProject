@@ -92,6 +92,44 @@ input[type="file"] {
 	flex-direction: column;
 	align-items: center;
 }
+.closeButton {
+	position: absolute;
+	width: 1.5em;
+	height: 1.5em;
+	background-color: red;
+	left: 0%;
+	top: 0%;
+	transform: translate(-50%, -50%);
+	display: grid;
+	border-radius: 50%;
+	color: white;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 200ms;
+	cursor: pointer;
+}
+.doc:hover .closeButton {
+	opacity: 1;
+	pointer-events: auto;
+}
+.closeButton::before, .closeButton::after {
+	content: "";
+	position: absolute;
+	width: 65%;
+	height: 12%;
+	top: 50%;
+	left: 50%;
+	background-color: white;
+	transform-origin: center center;
+	border-radius: 1em;
+}
+.closeButton::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+.closeButton::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
 .docImgCont {
 	position: relative;
 	width: 100%;
@@ -111,62 +149,28 @@ input[type="file"] {
 	right: 0%;
 	z-index: 2;
 }
-.doc .closeButton {
-	position: absolute;
-	width: 1em;
-	height: 1em;
-	background-color: red;
-	left: 0%;
-	top: 0%;
-	transform: translate(-50%, -50%);
-	display: grid;
-	border-radius: 50%;
-	color: white;
-	z-index: 1;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 200ms;
-	cursor: pointer;
-}
-.doc:hover .closeButton {
-	opacity: 1;
-	pointer-events: auto;
-}
-.doc .closeButton::before, .doc .closeButton::after {
-	content: "";
-	position: absolute;
-	width: 70%;
-	height: 10%;
-	top: 50%;
-	left: 50%;
-	background-color: white;
-	transform-origin: center center;
-	border-radius: 1em;
-}
-.doc .closeButton::before {
-	transform: translate(-50%, -50%) rotate(45deg);
-}
-.doc .closeButton::after {
-	transform: translate(-50%, -50%) rotate(-45deg);
-}
 .docLabel {
 	pointer-events: none;
+	cursor: pointer;
 	font-size: 0.8em;
 	width: 7em;
 	padding: 0.5em;
 	text-align: center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 	margin-top: auto;
 	background-color: skyblue;
 	border-radius: 3em;
 	color: white;
 	font-weight: bold;
 	transform: scale(0);
-	text-transform: uppercase;
 	transition: 200ms;
 	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
 }
 .docLabel.visible {
 	transform: scale(1);
+	pointer-events: auto;
 }
 .previewImageContainer img {
 	height: var(--imgWidth);
