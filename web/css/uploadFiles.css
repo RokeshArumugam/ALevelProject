@@ -35,7 +35,7 @@ main {
 	color: lightgrey;
 	pointer-events: none;
 }
-#fileInputBox {
+.fileInputCont {
 	position: relative;
 	flex-grow: 1;
 	align-self: stretch;

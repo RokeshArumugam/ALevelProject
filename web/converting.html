@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Handwriting Recognition AI</title>
+		<script type="text/javascript" src="eel.js"></script>
+		<script defer type="text/javascript" src="js/main.js"></script>
+		<script defer type="text/javascript" src="js/converting.js"></script>
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/converting.css">
+	</head>
+	<body onload="document.querySelector('body').classList.add('loaded')">
+		<header><h1>Converting...</h1></header>
+		<main>
+			<div class="previewDoc input">
+				<img id="inputImg"></img>
+			</div>
+			<div class="progressCont">
+				<div class="docProgressCont">
+					<div class="progressBar"></div>
+					<div class="progressMsg"></div>
+				</div>
+				<div class="overallProgressCont">
+					<div class="progressBar"></div>
+					<div class="progressMsg"></div>
+				</div>
+			</div>
+			<div class="previewDoc converted">
+			</div>
+		</main>
+	</body>
+</html>

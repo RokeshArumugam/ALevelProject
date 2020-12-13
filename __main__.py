@@ -10,7 +10,7 @@ toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
 
 try:
-	shutil.rmtree(docPath)
+	shutil.rmtree(toConvertDirectory)
 except:
 	pass
 os.mkdir(toConvertDirectory)
@@ -18,7 +18,7 @@ os.mkdir(toConvertDirectory)
 @eel.expose
 def pickSaveLocation():
 	Tk().withdraw()
-	loc = asksaveasfilename(title = "Choose save location", filetypes = (("text files", "*.txt")))
+	loc = asksaveasfilename(title = "Choose save location", filetypes = (("Text files", "*.txt"),("All files", "*.*")))
 	#print(tkinter.tkFileDialog.askopenfilename(initialdir = curr_directory,title = "Select file",filetypes = (("jpeg files","*.jpg"),("all files","*.*"))))
 	return loc, os.path.basename(loc)
 
@@ -34,22 +34,43 @@ def inputDocuments(docs):
 		fileCounter = 0
 		for fileExt, fileContent in docFiles:
 			fileCounter += 1
-			with open(f"img_{str(fileCounter).zfill(numDigits)}.{fileExt}", "wb") as f:
+			with open(f"{str(fileCounter).zfill(numDigits)}_{fileContent.split('/')[1].split(';')[0]}.{fileExt}", "wb") as f:
 				f.write(base64.b64decode(fileContent.split("base64,")[1]))
 		os.chdir(os.path.join("..", ".."))
 
 @eel.expose
 def convertDocuments():
 	os.chdir(toConvertDirectory)
-	for docName in os.listdir("."):
+	docs = os.listdir(".")
+	eel.setOverallProgressBarTotal(len(docs))
+	for docsCompleted, docName in enumerate(docs):
+		docSaveName = ".".join(docName.rsplit("_", 1))
+		eel.setDocProgressMsg("")
+		eel.setOverallProgressMsg(f"Converting {docSaveName}...")
+
 		os.chdir(docName)
-		text = ""
 		docFiles = sorted(os.listdir("."))
 		docFiles.remove(saveLocationFile)
-		for docFile in docFiles:
+
+		text = ""
+		eel.setConvertedText(text)
+		eel.setDocProgressBarCompleted(0)
+		eel.setDocProgressBarTotal(len(docFiles))
+		for docFilesCompleted, docFile in enumerate(docFiles):
+			with open(docFile, "rb") as f:
+				eel.setInputImg(f"data:image/{docFile.split('_')[1].split('.')[0]};base64,{bytes.decode(base64.b64encode(f.read()))}")
+
 			text += ai.readText(docFile)
-		with open(".".join(docName.rsplit("_", 1)), "w") as f:
+			eel.setConvertedText(text)
+			eel.setDocProgressBarCompleted(docFilesCompleted + 1)
+		eel.setDocProgressMsg("Saving...")
+		with open(docSaveName, "w") as f:
 			f.write(text)
+		with open(saveLocationFile, "r") as f:
+			shutil.copyfile(docSaveName, f.read())
+		eel.setDocProgressMsg("Saved!")
+		eel.setOverallProgressBarCompleted(docsCompleted + 1)
+		eel.setOverallProgressMsg(f"Converted {docSaveName}!")
 		os.chdir("..")
 		# TODO move doc from toConvert directory to history directory
 	os.chdir("..")

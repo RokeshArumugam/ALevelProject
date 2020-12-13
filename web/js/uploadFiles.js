@@ -78,5 +78,4 @@ function submitDocs() {
 		docs.push([doc.querySelector("label").dataset.path, newDocImgs])
 	})
 	eel.inputDocuments(docs)
-	eel.convertDocuments()
 }

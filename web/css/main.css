@@ -1,6 +1,7 @@
 :root {
 	--pageBackgroundColor: #FFF;
 	--titleColor: darkgrey;
+	--headerHeight: 3.5em;
 }
 * {
 	margin: 0;
@@ -10,15 +11,16 @@
 }
 body {
 	background-color: var(--pageBackgroundColor);
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
 	height: 100vh;
+}
+body > * {
+	width: 100%;
 }
 header {
 	display: grid;
 	grid-template-columns: 1fr 4fr 1fr;
 	place-items: center;
+	height: var(--headerHeight);
 }
 header a {
 	padding: 0.3em;
@@ -65,10 +67,9 @@ header h1::after {
 	width: 90%;
 }
 main {
-	padding: 1em 0em;
-	width: 100%;
-	flex-basis: 0;
-	flex-grow: 1;
+	padding: 1em;
+	height: calc(100% - var(--headerHeight));
+	max-height: calc(100% - var(--headerHeight));
 	overflow: auto;
 	display: flex;
 	flex-direction: column;

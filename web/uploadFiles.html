@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>Handwriting Recognition AI</title>
 		<script type="text/javascript" src="/eel.js"></script>
 		<script defer type="text/javascript" src="js/main.js"></script>
 		<script defer type="text/javascript" src="js/uploadFiles.js"></script>
@@ -12,9 +13,9 @@
 		<main>
 			<div class="buttonContainer">
 				<a id="createNewDoc" class="disabled" onclick="createNewDoc()">Add files for another document</a>
-				<a id="next" class="disabled" onclick="saveDocs()">Next</a>
+				<a id="next" class="disabled" href="converting.html" onclick="saveDocs();return false;">Next</a>
 			</div>
-    		<div id="fileInputBox">
+    		<div class="fileInputCont" id="fileInputBox">
     			<input id="fileInput" name="fileInput" multiple oninput="inputFile()" type="file" accept="image/*">
     			<div class="previewImageContainer"></div>
     			<label class="fileLabel" for="fileInput">Choose a file</label>
