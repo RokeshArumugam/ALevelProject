@@ -15,10 +15,7 @@
 	border-radius: 0.5em;
 }
 .menuButton {
-	text-decoration: none;
 	height: 5em;
-	display: grid;
-	place-items: center;
 	background-color: white;
 	color: grey;
 	font-size: 1.2em;

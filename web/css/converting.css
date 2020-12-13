@@ -76,3 +76,25 @@ main {
 	height: 3em;
 	line-height: 1.5em;
 }
+.goBackPrompt {
+	display: none;
+	margin-top: 2em;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.goBackPrompt.visible {
+	display: flex;
+}
+.goBackPrompt a {
+	padding: 0em 1em;
+	font-size: 1.3em;
+	height: 3em;
+	background-color: deepskyblue;
+	color: white;
+	font-weight: bold;
+	border-radius: 1em;
+	transition-duration: 200ms;
+}
+.goBackPrompt a:hover {
+	transform: scale(1.05);
+}

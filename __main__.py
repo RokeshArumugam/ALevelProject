@@ -9,12 +9,6 @@ historyDirectory = "history"
 toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
 
-try:
-	shutil.rmtree(toConvertDirectory)
-except:
-	pass
-os.mkdir(toConvertDirectory)
-
 @eel.expose
 def pickSaveLocation():
 	Tk().withdraw()
@@ -24,6 +18,12 @@ def pickSaveLocation():
 
 @eel.expose
 def inputDocuments(docs):
+	try:
+		shutil.rmtree(toConvertDirectory)
+	except:
+		pass
+	os.mkdir(toConvertDirectory)
+	
 	for docLoc, docFiles in docs:
 		docPath = os.path.join(toConvertDirectory, "_".join(os.path.basename(docLoc).rsplit(".", 1)))
 		os.mkdir(docPath)
@@ -63,16 +63,17 @@ def convertDocuments():
 			text += ai.readText(docFile)
 			eel.setConvertedText(text)
 			eel.setDocProgressBarCompleted(docFilesCompleted + 1)
-		eel.setDocProgressMsg("Saving...")
+		eel.setDocProgressMsg("Saving document...")
 		with open(docSaveName, "w") as f:
 			f.write(text)
 		with open(saveLocationFile, "r") as f:
 			shutil.copyfile(docSaveName, f.read())
-		eel.setDocProgressMsg("Saved!")
+		eel.setDocProgressMsg("Saved document!")
 		eel.setOverallProgressBarCompleted(docsCompleted + 1)
-		eel.setOverallProgressMsg(f"Converted {docSaveName}!")
+		eel.setOverallProgressMsg(f"Converted {docSaveName}")
 		os.chdir("..")
 		# TODO move doc from toConvert directory to history directory
 	os.chdir("..")
+	eel.finishedConverting()
 
 eel.start("index.html", size=(800, 600))

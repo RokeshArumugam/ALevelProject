@@ -9,12 +9,9 @@ main {
 	margin-bottom: 1em;
 }
 .buttonContainer a {
-	text-decoration: none;
 	padding: 1em;
 	border-radius: 5px;
 	color: white;
-	display: grid;
-	place-items: center;
 	text-align: center;
 	font-weight: bold;
 	transition-duration: 0.5s;

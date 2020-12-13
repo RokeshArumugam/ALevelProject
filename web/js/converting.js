@@ -52,3 +52,9 @@ eel.expose(setOverallProgressMsg)
 function setOverallProgressMsg(text) {
 	overallProgressMsg.innerText = text
 }
+
+eel.expose(finishedConverting)
+function finishedConverting() {
+	document.querySelector("h1").innerText = "Converted!"
+	document.querySelector(".goBackPrompt").classList.add("visible")
+}
