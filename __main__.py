@@ -10,6 +10,8 @@ historyDirectory = "history"
 toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
 
+os.makedirs(historyDirectory, exist_ok=True)
+
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
 
@@ -54,7 +56,6 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
-	os.makedirs(historyDirectory, exist_ok=True)
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))
@@ -94,7 +95,7 @@ def convertDocuments():
 def readHistory():
 	entries = []
 	os.chdir(historyDirectory)
-	for docDirName in os.listdir("."):
+	for docDirName in sorted(os.listdir("."), reverse=True):
 		entry = []
 		docTime, docSaveName = docDirName.split(" ", 1)
 		docSaveName = unescapeFilename(docSaveName)

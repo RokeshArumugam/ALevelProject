@@ -71,6 +71,7 @@ function saveDocs() {
 		return
 	}
 	createNewDoc()
+	fileInput.disabled = true
 	document.querySelectorAll(".doc label").forEach((el) => {
 		el.classList.add("visible")
 	})
