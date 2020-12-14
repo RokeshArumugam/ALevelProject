@@ -15,10 +15,6 @@ main {
 	text-align: center;
 	font-weight: bold;
 	transition-duration: 0.5s;
-	cursor: pointer;
-}
-.buttonContainer a:not(.disabled):hover {
-	transform: scale(1.05);
 }
 .buttonContainer a:nth-child(1) {
 	grid-column: 2;

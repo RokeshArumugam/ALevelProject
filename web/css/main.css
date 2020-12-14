@@ -82,6 +82,12 @@ a {
 	display: grid;
 	place-items: center;
 }
+.button {
+	cursor: pointer;
+}
+.button:not(.disabled):hover {
+	transform: scale(1.05);
+}
 .closeButton {
 	position: absolute;
 	width: 1.5em;
