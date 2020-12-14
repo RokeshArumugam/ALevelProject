@@ -106,10 +106,6 @@ input[type="file"] {
 	transition: opacity 200ms;
 	cursor: pointer;
 }
-.doc:hover .closeButton {
-	opacity: 1;
-	pointer-events: auto;
-}
 .closeButton::before, .closeButton::after {
 	content: "";
 	position: absolute;
@@ -126,6 +122,10 @@ input[type="file"] {
 }
 .closeButton::after {
 	transform: translate(-50%, -50%) rotate(-45deg);
+}
+.docImgCont:hover .closeButton {
+	opacity: 1;
+	pointer-events: auto;
 }
 .docImgCont {
 	position: relative;

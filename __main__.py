@@ -1,4 +1,4 @@
-import os, eel, glob, base64, shutil, ai
+import os, eel, glob, base64, shutil, time, ai
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
 
@@ -9,11 +9,20 @@ historyDirectory = "history"
 toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
 
+def escapeFilename(name):
+	return "_".join(name.rsplit(".", 1))
+
+def unescapeFilename(name):
+	return ".".join(name.rsplit("_", 1))
+
 @eel.expose
 def pickSaveLocation():
-	Tk().withdraw()
+	root = Tk()
+	root.withdraw()
+	root.update()
 	loc = asksaveasfilename(title = "Choose save location", filetypes = (("Text files", "*.txt"),("All files", "*.*")))
-	#print(tkinter.tkFileDialog.askopenfilename(initialdir = curr_directory,title = "Select file",filetypes = (("jpeg files","*.jpg"),("all files","*.*"))))
+	root.update()
+	root.destroy()
 	return loc, os.path.basename(loc)
 
 @eel.expose
@@ -25,7 +34,7 @@ def inputDocuments(docs):
 	os.mkdir(toConvertDirectory)
 	
 	for docLoc, docFiles in docs:
-		docPath = os.path.join(toConvertDirectory, "_".join(os.path.basename(docLoc).rsplit(".", 1)))
+		docPath = os.path.join(toConvertDirectory, escapeFilename(os.path.basename(docLoc)))
 		os.mkdir(docPath)
 		os.chdir(docPath)
 		with open(saveLocationFile, "w") as f:
@@ -40,15 +49,16 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
+	os.makedirs(historyDirectory, exist_ok=True)
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))
-	for docsCompleted, docName in enumerate(docs):
-		docSaveName = ".".join(docName.rsplit("_", 1))
+	for docsCompleted, docDirName in enumerate(docs):
+		docSaveName = unescapeFilename(docDirName)
 		eel.setDocProgressMsg("")
 		eel.setOverallProgressMsg(f"Converting {docSaveName}...")
 
-		os.chdir(docName)
+		os.chdir(docDirName)
 		docFiles = sorted(os.listdir("."))
 		docFiles.remove(saveLocationFile)
 
@@ -72,8 +82,9 @@ def convertDocuments():
 		eel.setOverallProgressBarCompleted(docsCompleted + 1)
 		eel.setOverallProgressMsg(f"Converted {docSaveName}")
 		os.chdir("..")
-		# TODO move doc from toConvert directory to history directory
+		shutil.move(docDirName, os.path.join("..", historyDirectory, f"{time.time()} {docDirName}"))
 	os.chdir("..")
+	os.rmdir(toConvertDirectory)
 	eel.finishedConverting()
 
 eel.start("index.html", size=(800, 600))

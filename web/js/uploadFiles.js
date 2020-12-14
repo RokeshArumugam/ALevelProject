@@ -30,19 +30,23 @@ function inputFile() {
 	}
 }
 function createNewDoc() {
+	if (newDocButton.classList.contains("disabled")) {
+		return
+	}
 	let imgs = previewCont.querySelectorAll(":scope > img")
 	let divDoc = document.createElement("div")
 	divDoc.classList.add("doc")
-	let closeButton = document.createElement("div")
-	closeButton.classList.add("closeButton")
-	closeButton.addEventListener("click", e => {
-		let div = e.target.parentElement
-		div.parentElement.removeChild(div)
-	})
-	divDoc.appendChild(closeButton)
 	
 	let divDocImgCont = document.createElement("div")
 	divDocImgCont.classList.add("docImgCont")
+	let closeButton = document.createElement("div")
+	closeButton.classList.add("closeButton")
+	closeButton.addEventListener("click", e => {
+		let div = e.target.parentElement.parentElement
+		div.parentElement.removeChild(div)
+	})
+	divDocImgCont.appendChild(closeButton)
+
 	imgs.forEach((img) => {
 		divDocImgCont.appendChild(img)
 	})
@@ -63,6 +67,9 @@ function createNewDoc() {
 	previewCont.appendChild(divDoc)
 }
 function saveDocs() {
+	if (nextButton.classList.contains("disabled")) {
+		return
+	}
 	createNewDoc()
 	document.querySelectorAll(".doc label").forEach((el) => {
 		el.classList.add("visible")
@@ -70,6 +77,9 @@ function saveDocs() {
 	nextButton.setAttribute("onclick", "submitDocs()")
 }
 function submitDocs() {
+	if (nextButton.classList.contains("disabled")) {
+		return
+	}
 	document.querySelectorAll(".doc").forEach((doc) => {
 		let newDocImgs = []
 		doc.querySelectorAll("img").forEach((img) => {
