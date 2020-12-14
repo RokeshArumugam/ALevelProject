@@ -33,7 +33,7 @@ header a {
 }
 header i {
 	color: #CCC;
-	transition: 200ms;
+	transition: 150ms;
 }
 header a:hover i {
 	color: #000;
@@ -85,6 +85,12 @@ a {
 .button {
 	cursor: pointer;
 }
+.button.disabled {
+	background-color: grey;
+	color: lightgrey;
+	pointer-events: none;
+	transform: scale(0.95);
+}
 .button:not(.disabled):hover {
 	transform: scale(1.05);
 }
@@ -102,7 +108,7 @@ a {
 	z-index: 1;
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 200ms;
+	transition: opacity 300ms;
 	cursor: pointer;
 }
 .closeButton::before, .closeButton::after {

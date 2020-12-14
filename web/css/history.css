@@ -10,7 +10,7 @@ main {
 	background-color: red;
 	color: white;
 	border-radius: 1em;
-	transition-duration: 200ms;
+	transition-duration: 300ms;
 }
 .historyEntriesCont {
 	width: 80%;

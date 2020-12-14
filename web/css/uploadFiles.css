@@ -14,19 +14,16 @@ main {
 	color: white;
 	text-align: center;
 	font-weight: bold;
-	transition-duration: 0.5s;
+	transition-duration: 200ms;
 }
 .buttonContainer a:nth-child(1) {
 	grid-column: 2;
+}
+.buttonContainer a:nth-child(1):not(.disabled) {
 	background-color: blue;
 }
-.buttonContainer a:nth-child(2) {
+.buttonContainer a:nth-child(2):not(.disabled) {
 	background-color: limegreen;
-}
-.buttonContainer a.disabled {
-	background-color: grey;
-	color: lightgrey;
-	pointer-events: none;
 }
 .fileInputCont {
 	position: relative;
@@ -50,7 +47,7 @@ input[type="file"] {
 	color: lightblue;
 	font-size: 1.5em;
 	font-weight: bold;
-	transition-duration: 0.5s;
+	transition-duration: 500ms;
 	display: grid;
 	place-items: center;
 	text-align: center;
