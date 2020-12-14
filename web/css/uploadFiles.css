@@ -68,124 +68,12 @@ input[type="file"] {
 	opacity: 0;
 }
 .previewImageContainer {
-	--imgWidth: 100px;
-	--divWidth: 150px;
 	padding: 1em;
 	display: grid;
 	justify-items: center;
-	grid-template-columns: repeat(auto-fill, minmax(var(--divWidth), 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(var(--docDivWidth), 1fr));
 	grid-gap: 1em;
 }
 .previewImageContainer > * {
 	z-index: 1;
-}
-.doc {
-	position: relative;
-	--divSpace: calc(var(--divWidth) - var(--imgWidth));
-	width: var(--divWidth);
-	height: calc(var(--imgWidth) + 2.5em);
-	max-width: var(--divWidth);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-.closeButton {
-	position: absolute;
-	width: 1.5em;
-	height: 1.5em;
-	background-color: red;
-	left: 0%;
-	top: 0%;
-	transform: translate(-50%, -50%);
-	display: grid;
-	border-radius: 50%;
-	color: white;
-	z-index: 1;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 200ms;
-	cursor: pointer;
-}
-.closeButton::before, .closeButton::after {
-	content: "";
-	position: absolute;
-	width: 65%;
-	height: 12%;
-	top: 50%;
-	left: 50%;
-	background-color: white;
-	transform-origin: center center;
-	border-radius: 1em;
-}
-.closeButton::before {
-	transform: translate(-50%, -50%) rotate(45deg);
-}
-.closeButton::after {
-	transform: translate(-50%, -50%) rotate(-45deg);
-}
-.docImgCont:hover .closeButton {
-	opacity: 1;
-	pointer-events: auto;
-}
-.docImgCont {
-	position: relative;
-	width: 100%;
-	height: var(--imgWidth);
-}
-.docImgCont img {
-	position: absolute;
-}
-.docImgCont img:nth-last-child(n+4) {
-	box-shadow: none;
-}
-.docImgCont img:nth-last-child(2) {
-	right: calc(var(--divSpace) / 2);
-	z-index: 1;
-}
-.docImgCont img:nth-last-child(1) {
-	right: 0%;
-	z-index: 2;
-}
-.docLabel {
-	pointer-events: none;
-	cursor: pointer;
-	font-size: 0.8em;
-	width: 7em;
-	padding: 0.5em;
-	text-align: center;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	margin-top: auto;
-	background-color: skyblue;
-	border-radius: 3em;
-	color: white;
-	font-weight: bold;
-	transform: scale(0);
-	transition: 200ms;
-	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-}
-.docLabel.visible {
-	transform: scale(1);
-	pointer-events: auto;
-}
-.previewImageContainer img {
-	height: var(--imgWidth);
-	width: var(--imgWidth);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	background-size: cover;
-	transform: scale(0);
-	animation: pop-in 300ms forwards;
-}
-
-@keyframes pop-in {
-	0% {
-		opacity: 0;
-		transform: scale(0);
-	}
-	100% {
-		opacity: 1;
-		transform: scale(1);
-	}
 }

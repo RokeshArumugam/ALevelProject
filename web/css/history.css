@@ -1,0 +1,45 @@
+.historyEntriesCont {
+	width: 80%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	border-radius: 1em;
+	padding: 1em;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+	overflow: auto;
+}
+.historyEntry {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	padding: 1em;
+}
+.historyEntry > * {
+	--columnWidth: 30%;
+	width: var(--columnWidth);
+	max-width: var(--columnWidth);
+}
+.historyEntry:not(:last-child) {
+	--offset: 2em;
+	box-shadow: 0em var(--offset) 5px calc(0em - var(--offset)) rgba(0, 0, 0, 0.3);
+}
+.docInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.docName, .docTime {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.docName {
+	font-size: 1.2em;
+}
+.docTime {
+	font-size: 0.9em;
+}
+/*TODO remove display: none when adding image preview feature*/
+.docLabel {
+	display: none;
+}

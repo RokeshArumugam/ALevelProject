@@ -2,6 +2,8 @@
 	--pageBackgroundColor: #FFF;
 	--titleColor: darkgrey;
 	--headerHeight: 3.5em;
+	--docImgWidth: 100px;
+	--docDivWidth: 150px;
 }
 * {
 	margin: 0;
@@ -79,4 +81,38 @@ a {
 	text-decoration: none;
 	display: grid;
 	place-items: center;
+}
+.closeButton {
+	position: absolute;
+	width: 1.5em;
+	height: 1.5em;
+	background-color: red;
+	left: 0%;
+	top: 0%;
+	transform: translate(-50%, -50%);
+	display: grid;
+	border-radius: 50%;
+	color: white;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 200ms;
+	cursor: pointer;
+}
+.closeButton::before, .closeButton::after {
+	content: "";
+	position: absolute;
+	width: 65%;
+	height: 12%;
+	top: 50%;
+	left: 50%;
+	background-color: white;
+	transform-origin: center center;
+	border-radius: 1em;
+}
+.closeButton::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+.closeButton::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
 }

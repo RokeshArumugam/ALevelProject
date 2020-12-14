@@ -1,0 +1,77 @@
+.doc {
+	position: relative;
+	--divSpace: calc(var(--docDivWidth) - var(--docImgWidth));
+	width: var(--docDivWidth);
+	height: calc(var(--docImgWidth) + 2.5em);
+	max-width: var(--docDivWidth);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.docImgCont:hover .closeButton {
+	opacity: 1;
+	pointer-events: auto;
+}
+.docImgCont {
+	position: relative;
+	width: 100%;
+	height: var(--docImgWidth);
+}
+.docImgCont img, .previewImageContainer img {
+	height: var(--docImgWidth);
+	width: var(--docImgWidth);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	background-size: cover;
+	transform: scale(0);
+	animation: pop-in 300ms forwards;
+}
+.docImgCont img {
+	position: absolute;
+}
+.docImgCont img:nth-last-child(n+4) {
+	box-shadow: none;
+}
+.docImgCont img:nth-last-child(2) {
+	right: calc(var(--divSpace) / 2);
+	z-index: 1;
+}
+.docImgCont img:nth-last-child(1) {
+	right: 0%;
+	z-index: 2;
+}
+.docLabel {
+	pointer-events: none;
+	cursor: pointer;
+	font-size: 0.8em;
+	width: 7em;
+	padding: 0.5em;
+	text-align: center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-top: auto;
+	background-color: skyblue;
+	border-radius: 3em;
+	color: white;
+	font-weight: bold;
+	transform: scale(0);
+	transition: 200ms;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+.docLabel.visible {
+	transform: scale(1);
+	pointer-events: auto;
+}
+
+@keyframes pop-in {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}

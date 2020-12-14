@@ -1,4 +1,5 @@
 import os, eel, glob, base64, shutil, time, ai
+from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
 
@@ -14,6 +15,10 @@ def escapeFilename(name):
 
 def unescapeFilename(name):
 	return ".".join(name.rsplit("_", 1))
+
+def convertImgFileToBase64(filename):
+	with open(filename, "rb") as f:
+		return f"data:image/{filename.split('_')[1].split('.')[0]};base64,{bytes.decode(base64.b64encode(f.read()))}"
 
 @eel.expose
 def pickSaveLocation():
@@ -67,9 +72,7 @@ def convertDocuments():
 		eel.setDocProgressBarCompleted(0)
 		eel.setDocProgressBarTotal(len(docFiles))
 		for docFilesCompleted, docFile in enumerate(docFiles):
-			with open(docFile, "rb") as f:
-				eel.setInputImg(f"data:image/{docFile.split('_')[1].split('.')[0]};base64,{bytes.decode(base64.b64encode(f.read()))}")
-
+			eel.setInputImg(convertImgFileToBase64(docFile))
 			text += ai.readText(docFile)
 			eel.setConvertedText(text)
 			eel.setDocProgressBarCompleted(docFilesCompleted + 1)
@@ -86,5 +89,25 @@ def convertDocuments():
 	os.chdir("..")
 	os.rmdir(toConvertDirectory)
 	eel.finishedConverting()
+
+@eel.expose
+def readHistory():
+	entries = []
+	os.chdir(historyDirectory)
+	for docDirName in os.listdir("."):
+		entry = []
+		docTime, docSaveName = docDirName.split(" ", 1)
+		docSaveName = unescapeFilename(docSaveName)
+		entry.append([docSaveName, datetime.fromtimestamp(float(docTime)).strftime("%d %b %Y %H:%M:%S")])
+		
+		os.chdir(docDirName)
+		docFiles = sorted(os.listdir("."))
+		docFiles.remove(saveLocationFile)
+		docFiles.remove(docSaveName)
+		entry.append([convertImgFileToBase64(docFile) for docFile in docFiles])
+		entries.append(entry)
+		os.chdir("..")
+	os.chdir("..")
+	return entries
 
 eel.start("index.html", size=(800, 600))
