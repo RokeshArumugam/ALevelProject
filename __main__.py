@@ -1,4 +1,4 @@
-import os, eel, glob, base64, shutil, time, ai
+import os, eel, glob, base64, shutil, time, docx, ai
 from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
@@ -9,6 +9,8 @@ eel.init("web")
 historyDirectory = "history"
 toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
+defaultFileExtension = "txt"
+supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("All files", "*.*"))
 
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
@@ -25,7 +27,7 @@ def pickSaveLocation():
 	root = Tk()
 	root.withdraw()
 	root.update()
-	loc = asksaveasfilename(title = "Choose save location", filetypes = (("Text files", "*.txt"),("All files", "*.*")))
+	loc = asksaveasfilename(title = "Choose save location", filetypes = supportedFileTypes)
 	root.update()
 	root.destroy()
 	return loc, os.path.basename(loc)
@@ -54,6 +56,7 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
+	os.makedirs(historyDirectory, exist_ok=True)
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))
@@ -76,8 +79,7 @@ def convertDocuments():
 			eel.setConvertedText(text)
 			eel.setDocProgressBarCompleted(docFilesCompleted + 1)
 		eel.setDocProgressMsg("Saving document...")
-		with open(docSaveName, "w") as f:
-			f.write(text)
+		saveFile(docSaveName, text)
 		with open(saveLocationFile, "r") as f:
 			shutil.copyfile(docSaveName, f.read())
 		eel.setDocProgressMsg("Saved document!")
@@ -88,6 +90,21 @@ def convertDocuments():
 	os.chdir("..")
 	os.rmdir(toConvertDirectory)
 	eel.finishedConverting()
+
+def saveFile(filename, contents):
+	try:
+		ext = filename.rsplit(".", 1)[1]
+	except:
+		ext = defaultFileExtension
+	print([contents])
+	if ext == "docx":
+		wordDoc = docx.Document()
+		for para in contents.split("\n\n"):
+			wordDoc.add_paragraph(para)
+		wordDoc.save(filename)
+	else:
+		with open(filename, "w") as f:
+			f.write(contents)
 
 @eel.expose
 def readHistory():

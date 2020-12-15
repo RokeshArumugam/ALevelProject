@@ -11,5 +11,5 @@ def readText(imgPath):
 	# Run tesseract OCR on image
 	# '-l eng'	  for using the English language
 	# '--oem 1' for using LSTM OCR Engine
-	text = pytesseract.image_to_string(im, config=('-l eng --oem 1 --psm 3'))
+	text = pytesseract.image_to_string(im, config=('-l eng --oem 1 --psm 3'))[:-1]
 	return text

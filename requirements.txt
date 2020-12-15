@@ -1,3 +1,4 @@
 eel==0.14.0
 opencv-python==4.4.0.46
 pytesseract==0.3.6
+python-docx==0.8.10
