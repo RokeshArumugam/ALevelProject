@@ -90,6 +90,7 @@ a {
 	color: lightgrey;
 	pointer-events: none;
 	transform: scale(0.95);
+	cursor: initial;
 }
 .button:not(.disabled):hover {
 	transform: scale(1.05);
