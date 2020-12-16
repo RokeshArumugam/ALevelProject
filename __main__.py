@@ -38,7 +38,6 @@ def saveFile(filename, contents):
 		ext = filename.rsplit(".", 1)[1]
 	except:
 		ext = defaultFileExtension
-	print([contents])
 	prefs = documentPreferences.get(ext)
 	if ext == "docx":
 		wordDoc = docx.Document()

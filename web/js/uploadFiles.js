@@ -3,6 +3,7 @@ let nextButton = document.querySelector("#next")
 let fileInput = document.querySelector("#fileInput")
 let previewCont = document.querySelector(".previewImageContainer")
 let docs = []
+let pickingSaveLocations = false
 
 previewCont.addEventListener("DOMSubtreeModified", e => {
 	if (previewCont.querySelectorAll(":scope > *").length > 0) {
@@ -66,27 +67,26 @@ function createNewDoc() {
 	divDoc.appendChild(label)
 	previewCont.appendChild(divDoc)
 }
-function saveDocs() {
+function next() {
 	if (nextButton.classList.contains("disabled")) {
-		return
+		return false
 	}
-	createNewDoc()
-	fileInput.disabled = true
-	document.querySelectorAll(".doc label").forEach((el) => {
-		el.classList.add("visible")
-	})
-	nextButton.setAttribute("onclick", "submitDocs()")
-}
-function submitDocs() {
-	if (nextButton.classList.contains("disabled")) {
-		return
-	}
-	document.querySelectorAll(".doc").forEach((doc) => {
-		let newDocImgs = []
-		doc.querySelectorAll("img").forEach((img) => {
-			newDocImgs.push([img.dataset.ext, img.src])
+	if (!pickingSaveLocations) {
+		createNewDoc()
+		fileInput.disabled = true
+		document.querySelectorAll(".doc label").forEach((el) => {
+			el.classList.add("visible")
 		})
-		docs.push([doc.querySelector("label").dataset.path, newDocImgs])
-	})
-	eel.inputDocuments(docs)
+		pickingSaveLocations = true
+		return false
+	} else {
+		document.querySelectorAll(".doc").forEach((doc) => {
+			let newDocImgs = []
+			doc.querySelectorAll("img").forEach((img) => {
+				newDocImgs.push([img.dataset.ext, img.src])
+			})
+			docs.push([doc.querySelector("label").dataset.path, newDocImgs])
+		})
+		eel.inputDocuments(docs)
+	}
 }

@@ -1,5 +1,4 @@
-import cv2
-import pytesseract
+import cv2, pytesseract, re
 
 def readText(imgPath):
 	# Uncomment the line below to provide path to tesseract manually
@@ -11,5 +10,8 @@ def readText(imgPath):
 	# Run tesseract OCR on image
 	# '-l eng'	  for using the English language
 	# '--oem 1' for using LSTM OCR Engine
-	text = pytesseract.image_to_string(im, config=('-l eng --oem 1 --psm 3'))[:-1]
+	return formatText(pytesseract.image_to_string(im, config=('-l eng --oem 1 --psm 3'))[:-1])
+
+def formatText(text):
+	text = re.sub(r"([^.!?\n])\n([^\n])", r"\1 \2", text)
 	return text
