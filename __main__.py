@@ -1,7 +1,9 @@
-import os, eel, glob, base64, shutil, time, docx, ai
+import os, eel, glob, base64, shutil, time
 from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
+import ai, docx
+from fpdf import FPDF
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 eel.init("web")
@@ -10,7 +12,16 @@ historyDirectory = "history"
 toConvertDirectory = "toConvert"
 saveLocationFile = "saveLocation.txt"
 defaultFileExtension = "txt"
-supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("All files", "*.*"))
+supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("Portable Document Format (PDF)", "*.pdf"), ("All files", "*.*"))
+
+documentPreferences = {
+	"pdf": {
+		"fontName": "Arial",
+		"fontSize": 15,
+		"lineHeight": 20,
+		"lineWidth": (595 - (72 / 2.5 * 2))
+	}
+}
 
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
@@ -21,6 +32,30 @@ def unescapeFilename(name):
 def convertImgFileToBase64(filename):
 	with open(filename, "rb") as f:
 		return f"data:image/{filename.split('_')[1].split('.')[0]};base64,{bytes.decode(base64.b64encode(f.read()))}"
+
+def saveFile(filename, contents):
+	try:
+		ext = filename.rsplit(".", 1)[1]
+	except:
+		ext = defaultFileExtension
+	print([contents])
+	prefs = documentPreferences.get(ext)
+	if ext == "docx":
+		wordDoc = docx.Document()
+		for para in contents.split("\n\n"):
+			wordDoc.add_paragraph(para)
+		wordDoc.save(filename)
+	elif ext == "pdf":
+		pdf = FPDF("P", "pt", "A4") # 595pt x 842pt
+		pdf.set_font(prefs["fontName"], size=prefs["fontSize"])
+		pdf.add_page()
+		for para in contents.split("\n\n"):
+			pdf.multi_cell(prefs["lineWidth"], prefs["lineHeight"], txt=para)
+			pdf.ln()
+		pdf.output(filename)
+	else:
+		with open(filename, "w") as f:
+			f.write(contents)
 
 @eel.expose
 def pickSaveLocation():
@@ -90,21 +125,6 @@ def convertDocuments():
 	os.chdir("..")
 	os.rmdir(toConvertDirectory)
 	eel.finishedConverting()
-
-def saveFile(filename, contents):
-	try:
-		ext = filename.rsplit(".", 1)[1]
-	except:
-		ext = defaultFileExtension
-	print([contents])
-	if ext == "docx":
-		wordDoc = docx.Document()
-		for para in contents.split("\n\n"):
-			wordDoc.add_paragraph(para)
-		wordDoc.save(filename)
-	else:
-		with open(filename, "w") as f:
-			f.write(contents)
 
 @eel.expose
 def readHistory():
