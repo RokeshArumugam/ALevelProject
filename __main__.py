@@ -1,4 +1,4 @@
-import os, eel, glob, base64, shutil, time
+import os, eel, glob, base64, json, shutil, time
 from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
@@ -10,11 +10,13 @@ eel.init("web")
 
 historyDirectory = "history"
 toConvertDirectory = "toConvert"
+settingsFile = "settings.json"
 saveLocationFile = "saveLocation.txt"
 defaultFileExtension = "txt"
 supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("Portable Document Format (PDF)", "*.pdf"), ("All files", "*.*"))
 
-documentPreferences = {
+settings = {}
+defaultSettings = {
 	"pdf": {
 		"fontName": "Arial",
 		"fontSize": 15,
@@ -22,6 +24,19 @@ documentPreferences = {
 		"lineWidth": (595 - (72 / 2.5 * 2))
 	}
 }
+
+def readSettings():
+	global settings
+	try:
+		with open(settingsFile, "r") as f:
+			settings = json.load(f)
+	except:
+		pass
+
+def writeSettings():
+	global settings
+	with open(settingsFile, "w") as f:
+		json.dump(settings, f)
 
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
@@ -38,7 +53,7 @@ def saveFile(filename, contents):
 		ext = filename.rsplit(".", 1)[1]
 	except:
 		ext = defaultFileExtension
-	prefs = documentPreferences.get(ext)
+	prefs = settings.get(ext, defaultSettings.get(ext))
 	if ext == "docx":
 		wordDoc = docx.Document()
 		for para in contents.split("\n\n"):
@@ -55,6 +70,11 @@ def saveFile(filename, contents):
 	else:
 		with open(filename, "w") as f:
 			f.write(contents)
+
+@eel.expose
+def updateSettings(newSettings):
+	settings.update(newSettings)
+	writeSettings()
 
 @eel.expose
 def pickSaveLocation():
@@ -90,7 +110,6 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
-	os.makedirs(historyDirectory, exist_ok=True)
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))
@@ -127,7 +146,6 @@ def convertDocuments():
 
 @eel.expose
 def readHistory():
-	os.makedirs(historyDirectory, exist_ok=True)
 	entries = []
 	os.chdir(historyDirectory)
 	for docDirName in sorted(os.listdir("."), reverse=True):
@@ -148,9 +166,10 @@ def readHistory():
 
 @eel.expose
 def clearHistory():
-	try:
-		shutil.rmtree(historyDirectory)
-	except:
-		pass
+	for folder in os.listdir(historyDirectory):
+		shutil.rmtree(os.path.join(historyDirectory, folder))
 
+open(settingsFile, "a").close()
+os.makedirs(historyDirectory, exist_ok=True)
+readSettings()
 eel.start("index.html", size=(800, 600))
