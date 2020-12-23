@@ -3,7 +3,9 @@
 	--titleColor: darkgrey;
 	--headerHeight: 3.5em;
 	--docImgWidth: 100px;
-	--docDivWidth: 150px;
+	--docImgContWidth: 150px;
+	--docDivPadding: 0.4em;
+	--docDivWidth: calc(var(--docImgContWidth) + (var(--docDivPadding) * 2));
 }
 * {
 	margin: 0;

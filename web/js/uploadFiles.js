@@ -80,13 +80,38 @@ function next() {
 		pickingSaveLocations = true
 		return false
 	} else {
-		document.querySelectorAll(".doc").forEach((doc) => {
-			let newDocImgs = []
-			doc.querySelectorAll("img").forEach((img) => {
-				newDocImgs.push([img.dataset.ext, img.src])
+		let valid = validateDocs()
+		if (valid) {
+			document.querySelectorAll(".doc").forEach((doc) => {
+				let newDocImgs = []
+				doc.querySelectorAll("img").forEach((img) => {
+					newDocImgs.push([img.dataset.ext, img.src])
+				})
+				docs.push([doc.querySelector("label").dataset.path, newDocImgs])
 			})
-			docs.push([doc.querySelector("label").dataset.path, newDocImgs])
-		})
-		eel.inputDocuments(docs)
+			eel.inputDocuments(docs)
+		}
+		return valid
 	}
+}
+function validateDocs() {
+	let valid = true
+	let errorMsg = ""
+	let docs = document.querySelectorAll(".doc")
+	let saveLocations = []
+	docs.forEach(doc => {
+		let saveLocation = doc.querySelector("label").dataset.path
+		doc.classList.remove("error")
+		if (saveLocations.includes(saveLocation)) {
+			valid = false
+			doc.classList.add("error")
+			docs[saveLocations.indexOf(saveLocation)].classList.add("error")
+		}
+		saveLocations.push(saveLocation)
+	})
+	if (!valid) {
+		errorMsg += "You're trying to save multiple documents to the same location. They are highlighted. Please pick different save locations for them."
+	}
+	alert(errorMsg)
+	return valid
 }
