@@ -1,16 +1,8 @@
 let settingsCont = document.querySelector(".contentCont");
 
-function updateInputSetting(ev) {
-	let el = ev.target;
-	let inputSettings = {[el.id]: getInputValue(el)};
-
-	el = el.parentElement;
-	while (el.parentElement.hasAttribute("id")) {
-		el = el.parentElement;
-		inputSettings = {[el.id]: inputSettings}
-	};
-	eel.updateSettings(inputSettings);
-}
+function camelToSentence(text) {
+	return (text.charAt(0).toUpperCase() + text.slice(1)).replace(/([a-z])([A-Z])/g, "$1 $2")
+};
 function getInputValue(input) {
 	switch (input.type) {
 		case "number":
@@ -23,9 +15,19 @@ function getInputValue(input) {
 			return input.value;
 	};
 }
-function camelToSentence(text) {
-	return (text.charAt(0).toUpperCase() + text.slice(1)).replace(/([a-z])([A-Z])/g, "$1 $2")
-};
+function updateInputSetting(ev) {
+	let el = ev.target;
+	let inputSettings = {[el.id]: getInputValue(el)};
+	
+	if (!inputSettings[el.id] || (el.type == "number" && isNaN(inputSettings[el.id]))) return
+	
+	el = el.parentElement;
+	while (el.parentElement.hasAttribute("id")) {
+		el = el.parentElement;
+		inputSettings = {[el.id]: inputSettings}
+	};
+	eel.updateSettings(inputSettings);
+}
 function createSetting(settings, section, key) {
 	let setting = document.createElement("div");
 	setting.classList.add("setting");

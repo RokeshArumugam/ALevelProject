@@ -8,7 +8,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-	border-radius: 1em;
+	border-radius: var(--borderRadius);
 }
 .doc.error {
 	box-shadow: 0px 0px 0px 3px red;
@@ -26,7 +26,7 @@
 .docImgCont img, .previewImageContainer img {
 	height: var(--docImgWidth);
 	width: var(--docImgWidth);
-	border-radius: 10px;
+	border-radius: var(--borderRadius);
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	background-size: cover;
 	transform: scale(0);
@@ -57,7 +57,7 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	background-color: skyblue;
-	border-radius: 3em;
+	border-radius: var(--borderRadius);
 	color: white;
 	font-weight: bold;
 	transform: scale(0);

@@ -29,6 +29,7 @@ function inputFile() {
 		}
 		freader.readAsDataURL(file)
 	}
+	fileInput.value = ""
 }
 function createNewDoc() {
 	if (newDocButton.classList.contains("disabled")) {

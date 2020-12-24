@@ -42,6 +42,9 @@
 .settingLabel:hover {
 	transform: scale(1.1);
 }
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	margin-left: -15px;
+}
 .settingInput {
 	--generalWidth: 10em;
 	--width: var(--generalWidth);
@@ -51,13 +54,13 @@
 	outline: none;
 	border: none;
 	box-shadow: 0px 0px var(--boxShadowBlur) 0px var(--boxShadowClr);
-	border-radius: 1em;
+	border-radius: var(--borderRadius);
 	font-size: 1em;
 	width: var(--width);
 	margin-left: calc((var(--generalWidth) - var(--width)) / 2);
 }
 .settingInput[type=number] {
-	--width: 4em;
+	--width: 3.5em;
 	text-align: center;
 	padding-left: 0;
 	padding-right: 0;

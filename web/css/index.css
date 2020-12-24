@@ -12,12 +12,10 @@
 	max-width: 500px;
 }
 .menuButton {
-	border-radius: 0.5em;
-}
-.menuButton {
 	height: 5em;
 	background-color: white;
 	color: grey;
+	border-radius: var(--borderRadius);
 	font-size: 1.2em;
 	font-weight: bold;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
