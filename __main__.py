@@ -17,7 +17,7 @@ supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.d
 
 settings = {}
 defaultSettings = {
-	"constraints": {
+	"--constraints": {
 		"fontSizeMin": 1,
 		"fontSizeMax": 40,
 		"lineHeightMin": 5,
@@ -26,11 +26,13 @@ defaultSettings = {
 	"general": {
 		"useSpellCheckDictionary": True
 	},
-	"pdf": {
-		"fontName": "Arial",
-		"fontSize": 15,
-		"lineHeight": 20,
-		"--lineWidth": (595 - (72 / 2.5 * 2))
+	"document": {
+		"PDF": {
+			"fontName": "Arial",
+			"fontSize": 15,
+			"lineHeight": 20,
+			"--lineWidth": (595 - (72 / 2.5 * 2))
+		}
 	}
 }
 
@@ -85,13 +87,14 @@ def saveFile(filename, contents):
 		ext = filename.rsplit(".", 1)[1]
 	except:
 		ext = defaultFileExtension
-	prefs = settings.get(ext, defaultSettings.get(ext))
-	if ext == "docx":
+	ext = ext.upper()
+	prefs = settings.get("document", defaultSettings.get("document")).get(ext, defaultSettings.get("document").get(ext))
+	if ext == "DOCX":
 		wordDoc = docx.Document()
 		for para in contents.split("\n\n"):
 			wordDoc.add_paragraph(para)
 		wordDoc.save(filename)
-	elif ext == "pdf":
+	elif ext == "PDF":
 		pdf = FPDF("P", "pt", "A4") # 595pt x 842pt
 		pdf.set_font(prefs["fontName"], size=prefs["fontSize"])
 		pdf.add_page()
