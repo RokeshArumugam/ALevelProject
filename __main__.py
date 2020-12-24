@@ -1,4 +1,4 @@
-import os, eel, glob, base64, json, shutil, time
+import os, eel, glob, base64, json, copy, shutil, time
 from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
@@ -17,14 +17,24 @@ supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.d
 
 settings = {}
 defaultSettings = {
+	"constraints": {
+		"fontSizeMin": 1,
+		"fontSizeMax": 40,
+		"lineHeightMin": 5,
+		"lineHeightMax": 40
+	},
+	"general": {
+		"useSpellCheckDictionary": True
+	},
 	"pdf": {
 		"fontName": "Arial",
 		"fontSize": 15,
 		"lineHeight": 20,
-		"lineWidth": (595 - (72 / 2.5 * 2))
+		"--lineWidth": (595 - (72 / 2.5 * 2))
 	}
 }
 
+@eel.expose
 def readSettings():
 	global settings
 	try:
@@ -32,11 +42,33 @@ def readSettings():
 			settings = json.load(f)
 	except:
 		pass
+	return updateDict(settings, copy.deepcopy(defaultSettings))
 
+@eel.expose
 def writeSettings():
 	global settings
 	with open(settingsFile, "w") as f:
 		json.dump(settings, f)
+
+def updateDict(newDict, storedDict):
+	for key, val in newDict.items():
+		if (key not in storedDict) or not isinstance(val, dict):
+			storedDict.update(newDict)
+		else:
+			updateDict(val, storedDict[key])
+	return storedDict
+
+@eel.expose
+def updateSettings(newSettings):
+	global settings
+	settings = updateDict(newSettings, settings)
+	writeSettings()
+
+@eel.expose
+def resetSettings():
+	global settings
+	settings = {}
+	writeSettings()
 
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
@@ -64,17 +96,12 @@ def saveFile(filename, contents):
 		pdf.set_font(prefs["fontName"], size=prefs["fontSize"])
 		pdf.add_page()
 		for para in contents.split("\n\n"):
-			pdf.multi_cell(prefs["lineWidth"], prefs["lineHeight"], txt=para)
+			pdf.multi_cell(prefs["--lineWidth"], prefs["lineHeight"], txt=para)
 			pdf.ln()
 		pdf.output(filename)
 	else:
 		with open(filename, "w") as f:
 			f.write(contents)
-
-@eel.expose
-def updateSettings(newSettings):
-	settings.update(newSettings)
-	writeSettings()
 
 @eel.expose
 def pickSaveLocation():

@@ -3,17 +3,17 @@
 		<title>Handwriting Recognition AI</title>
 		<script type="text/javascript" src="eel.js"></script>
 		<script defer type="text/javascript" src="js/main.js"></script>
-		<script defer type="text/javascript" src="js/history.js"></script>
+		<script defer type="text/javascript" src="js/settings.js"></script>
 		<script src="https://kit.fontawesome.com/4b3b9ce2b0.js" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/doc.css">
 		<link rel="stylesheet" href="css/smallPage.css">
-		<link rel="stylesheet" href="css/history.css">
+		<link rel="stylesheet" href="css/settings.css">
 	</head>
 	<body onload="document.querySelector('body').classList.add('loaded')">
-		<header><a onclick="back()"><i class="fas fa-arrow-circle-left"></i></a><h1>History</h1></header>
+		<header><a onclick="back()"><i class="fas fa-arrow-circle-left"></i></a><h1>Settings</h1></header>
 		<main>
-			<a class="clearButton button" onclick="eel.clearHistory()(showHistory)">Clear history</a>
+			<a class="clearButton button" onclick="eel.resetSettings()(showSettings)">Reset settings</a>
 			<div class="contentCont"></div>
 		</main>
 	</body>

@@ -1,4 +1,4 @@
-let entriesCont = document.querySelector(".historyEntriesCont")
+let entriesCont = document.querySelector(".contentCont")
 
 function showHistory() {
 	entriesCont.innerHTML = ""

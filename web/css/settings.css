@@ -1,0 +1,87 @@
+.contentCont {
+	height: calc(100% - 3.5em);
+}
+.settingsSection {
+	width: 100%;
+	padding: 3em 1em;
+	padding-bottom: 0em;
+	position: relative;
+	font-size: 0.8em;
+}
+.settingsSection::after {
+	content: attr(title);
+	font-weight: bold;
+	font-size: 2em;
+	position: absolute;
+	top: 0em;
+	left: 0em;
+}
+.settingsSection:not(:first-child) {
+	margin-top: 2em;
+}
+.setting {
+	font-size: 1rem;
+	height: 2em;
+	display: flex;
+	align-items: center;
+}
+.setting:first-child {
+	margin-top: 0.2em;
+}
+.setting:not(:last-child) {
+	margin-bottom: 1em;
+}
+.settingLabel {
+	margin-right: 1em;
+	font-size: 1.1em;
+	min-width: 50%;
+	text-align: center;
+	display: inline-block;
+	transition-duration: 200ms;
+}
+.settingLabel:hover {
+	transform: scale(1.1);
+}
+.settingInput {
+	--generalWidth: 10em;
+	--width: var(--generalWidth);
+	--boxShadowClr: rgba(0, 0, 0, 0.4);
+	--boxShadowBlur: 3px;
+	padding: 0.4em;
+	outline: none;
+	border: none;
+	box-shadow: 0px 0px var(--boxShadowBlur) 0px var(--boxShadowClr);
+	border-radius: 1em;
+	font-size: 1em;
+	width: var(--width);
+	margin-left: calc((var(--generalWidth) - var(--width)) / 2);
+}
+.settingInput[type=number] {
+	--width: 4em;
+	text-align: center;
+	padding-left: 0;
+	padding-right: 0;
+}
+.settingInput[type=checkbox] {
+	--width: 1.5em;
+	height: var(--width);
+	appearance: none;
+	position: relative;
+}
+.settingInput::after {
+	position: absolute;
+	top: 38%;
+	left: 62%;
+	transform: translate(-50%, -50%);
+	font-family: "Font Awesome 5 Free";
+	font-size: 1.6em;
+	font-weight: 900;
+	color: dodgerblue;
+}
+.settingInput:checked::after {
+	content: "\f00c";
+}
+.settingInput:focus {
+	--boxShadowClr: dodgerblue;
+	--boxShadowBlur: 5px;
+}
