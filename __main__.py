@@ -17,7 +17,7 @@ supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.d
 
 settings = {}
 defaultSettings = {
-	"--constraints": {
+	"__constraints": {
 		"fontSizeMin": 1,
 		"fontSizeMax": 40,
 		"lineHeightMin": 5,
@@ -31,7 +31,8 @@ defaultSettings = {
 			"fontName": "Arial",
 			"fontSize": 15,
 			"lineHeight": 20,
-			"--lineWidth": (595 - (72 / 2.5 * 2))
+			"__fontNameAllowed": ["Arial", "Courier", "Helvetica", "Times", "Symbol", "ZapfDingbats"],
+			"__lineWidth": (595 - (72 / 2.5 * 2))
 		}
 	}
 }
@@ -99,7 +100,7 @@ def saveFile(filename, contents):
 		pdf.set_font(prefs["fontName"], size=prefs["fontSize"])
 		pdf.add_page()
 		for para in contents.split("\n\n"):
-			pdf.multi_cell(prefs["--lineWidth"], prefs["lineHeight"], txt=para)
+			pdf.multi_cell(prefs["__lineWidth"], prefs["lineHeight"], txt=para)
 			pdf.ln()
 		pdf.output(filename)
 	else:
