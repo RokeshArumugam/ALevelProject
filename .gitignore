@@ -1,6 +1,6 @@
 venv/
 __pycache__/
-settings.json
+settings/
 history/
 toConvert/
 Design/output/

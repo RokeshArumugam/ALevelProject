@@ -10,6 +10,7 @@ eel.init("web")
 
 historyDirectory = "history"
 toConvertDirectory = "toConvert"
+settingsDirectory = "settings"
 settingsFile = "settings.json"
 saveLocationFile = "saveLocation.txt"
 defaultFileExtension = "txt"
@@ -36,42 +37,6 @@ defaultSettings = {
 		}
 	}
 }
-
-@eel.expose
-def readSettings():
-	global settings
-	try:
-		with open(settingsFile, "r") as f:
-			settings = json.load(f)
-	except:
-		pass
-	return updateDict(settings, copy.deepcopy(defaultSettings))
-
-@eel.expose
-def writeSettings():
-	global settings
-	with open(settingsFile, "w") as f:
-		json.dump(settings, f)
-
-def updateDict(newDict, storedDict):
-	for key, val in newDict.items():
-		if (key not in storedDict) or not isinstance(val, dict):
-			storedDict.update(newDict)
-		else:
-			updateDict(val, storedDict[key])
-	return storedDict
-
-@eel.expose
-def updateSettings(newSettings):
-	global settings
-	settings = updateDict(newSettings, settings)
-	writeSettings()
-
-@eel.expose
-def resetSettings():
-	global settings
-	settings = {}
-	writeSettings()
 
 def escapeFilename(name):
 	return "_".join(name.rsplit(".", 1))
@@ -148,15 +113,16 @@ def convertDocuments():
 		docSaveName = unescapeFilename(docDirName)
 		eel.setDocProgressMsg("")
 		eel.setOverallProgressMsg(f"Converting {docSaveName}...")
-
+		
 		os.chdir(docDirName)
 		docFiles = sorted(os.listdir("."))
 		docFiles.remove(saveLocationFile)
-
+		
 		text = ""
 		eel.setConvertedText(text)
 		eel.setDocProgressBarCompleted(0)
 		eel.setDocProgressBarTotal(len(docFiles))
+		
 		for docFilesCompleted, docFile in enumerate(docFiles):
 			eel.setInputImg(convertImgFileToBase64(docFile))
 			text += ai.readText(docFile)
@@ -200,7 +166,44 @@ def clearHistory():
 	for folder in os.listdir(historyDirectory):
 		shutil.rmtree(os.path.join(historyDirectory, folder))
 
-open(settingsFile, "a").close()
+@eel.expose
+def readSettings():
+	global settings
+	try:
+		with open(os.path.join(settingsFile, settingsFile), "r") as f:
+			settings = json.load(f)
+	except:
+		pass
+	return updateDict(settings, copy.deepcopy(defaultSettings))
+
+@eel.expose
+def writeSettings():
+	global settings
+	with open(os.path.join(settingsDirectory, settingsFile), "w") as f:
+		json.dump(settings, f)
+
+def updateDict(newDict, storedDict):
+	for key, val in newDict.items():
+		if (key not in storedDict) or not isinstance(val, dict):
+			storedDict.update(newDict)
+		else:
+			updateDict(val, storedDict[key])
+	return storedDict
+
+@eel.expose
+def updateSettings(newSettings):
+	global settings
+	settings = updateDict(newSettings, settings)
+	writeSettings()
+
+@eel.expose
+def resetSettings():
+	global settings
+	settings = {}
+	writeSettings()
+
+os.makedirs(settingsDirectory, exist_ok=True)
+open(os.path.join(settingsDirectory, settingsFile), "a").close()
 os.makedirs(historyDirectory, exist_ok=True)
 readSettings()
 eel.start("index.html", size=(800, 600))
