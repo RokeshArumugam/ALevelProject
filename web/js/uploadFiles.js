@@ -112,7 +112,7 @@ function validateDocs() {
 	})
 	if (!valid) {
 		errorMsg += "You're trying to save multiple documents to the same location. They are highlighted. Please pick different save locations for them."
+		alert(errorMsg)
 	}
-	alert(errorMsg)
 	return valid
 }

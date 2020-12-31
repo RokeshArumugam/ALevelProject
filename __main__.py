@@ -16,8 +16,13 @@ saveLocationFile = "saveLocation.txt"
 defaultFileExtension = "txt"
 supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("Portable Document Format (PDF)", "*.pdf"), ("All files", "*.*"))
 
-settings = {}
+fullSettings = {}
+userSettings = {}
 defaultSettings = {
+	"__extToType": {
+		"DOCX": "Microsoft Word Document",
+		"PDF": "PDF"
+	},
 	"__constraints": {
 		"fontSizeMin": 1,
 		"fontSizeMax": 40,
@@ -54,7 +59,7 @@ def saveFile(filename, contents):
 	except:
 		ext = defaultFileExtension
 	ext = ext.upper()
-	prefs = settings.get("document", defaultSettings.get("document")).get(ext, defaultSettings.get("document").get(ext))
+	prefs = fullSettings["document"].get(defaultSettings["__extToType"][ext], {})
 	if ext == "DOCX":
 		wordDoc = docx.Document()
 		for para in contents.split("\n\n"):
@@ -64,7 +69,7 @@ def saveFile(filename, contents):
 		pdf = FPDF("P", "pt", "A4") # 595pt x 842pt
 		pdf.set_font(prefs["fontName"], size=prefs["fontSize"])
 		pdf.add_page()
-		for para in contents.split("\n\n"):
+		for para in contents.encode('latin-1', 'replace').decode('latin-1').split("\n\n"):
 			pdf.multi_cell(prefs["__lineWidth"], prefs["lineHeight"], txt=para)
 			pdf.ln()
 		pdf.output(filename)
@@ -106,6 +111,10 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
+	try:
+		shutil.rmtree(toConvertDirectory)
+	except:
+		pass
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))
@@ -168,19 +177,17 @@ def clearHistory():
 
 @eel.expose
 def readSettings():
-	global settings
-	try:
-		with open(os.path.join(settingsFile, settingsFile), "r") as f:
-			settings = json.load(f)
-	except:
-		pass
-	return updateDict(settings, copy.deepcopy(defaultSettings))
+	global fullSettings, userSettings
+	with open(os.path.join(settingsDirectory, settingsFile), "r") as f:
+		userSettings = json.load(f)
+	fullSettings = copy.deepcopy(defaultSettings)
+	updateDict(userSettings, fullSettings)
+	return fullSettings
 
 @eel.expose
 def writeSettings():
-	global settings
 	with open(os.path.join(settingsDirectory, settingsFile), "w") as f:
-		json.dump(settings, f)
+		json.dump(userSettings, f)
 
 def updateDict(newDict, storedDict):
 	for key, val in newDict.items():
@@ -188,19 +195,18 @@ def updateDict(newDict, storedDict):
 			storedDict.update(newDict)
 		else:
 			updateDict(val, storedDict[key])
-	return storedDict
 
 @eel.expose
 def updateSettings(newSettings):
-	global settings
-	settings = updateDict(newSettings, settings)
+	global fullSettings, userSettings
+	fullSettings = updateDict(newSettings, fullSettings)
+	userSettings = updateDict(newSettings, userSettings)
 	writeSettings()
 
 @eel.expose
 def resetSettings():
-	global settings
-	settings = {}
-	writeSettings()
+	open(os.path.join(settingsDirectory, settingsFile), "w").close()
+	readSettings()
 
 os.makedirs(settingsDirectory, exist_ok=True)
 open(os.path.join(settingsDirectory, settingsFile), "a").close()
