@@ -10,7 +10,6 @@ eel.init("web")
 
 historyDirectory = "history"
 toConvertDirectory = "toConvert"
-settingsDirectory = "settings"
 settingsFile = "settings.json"
 saveLocationFile = "saveLocation.txt"
 defaultFileExtension = "txt"
@@ -28,9 +27,6 @@ defaultSettings = {
 		"fontSizeMax": 40,
 		"lineHeightMin": 5,
 		"lineHeightMax": 40
-	},
-	"general": {
-		"useSpellCheckDictionary": True
 	},
 	"document": {
 		"PDF": {
@@ -175,41 +171,44 @@ def clearHistory():
 	for folder in os.listdir(historyDirectory):
 		shutil.rmtree(os.path.join(historyDirectory, folder))
 
-@eel.expose
 def readSettings():
 	global fullSettings, userSettings
-	with open(os.path.join(settingsDirectory, settingsFile), "r") as f:
-		userSettings = json.load(f)
+	with open(settingsFile, "a+") as f:
+		f.seek(0)
+		contents = f.read()
+		userSettings = json.loads(contents if contents else "{}")
 	fullSettings = copy.deepcopy(defaultSettings)
 	updateDict(userSettings, fullSettings)
 	return fullSettings
 
 @eel.expose
+def getSettings():
+	return fullSettings
+
+@eel.expose
 def writeSettings():
-	with open(os.path.join(settingsDirectory, settingsFile), "w") as f:
+	with open(settingsFile, "w") as f:
 		json.dump(userSettings, f)
 
 def updateDict(newDict, storedDict):
 	for key, val in newDict.items():
 		if (key not in storedDict) or not isinstance(val, dict):
-			storedDict.update(newDict)
+			storedDict.update({key: val})
 		else:
 			updateDict(val, storedDict[key])
 
 @eel.expose
 def updateSettings(newSettings):
 	global fullSettings, userSettings
-	fullSettings = updateDict(newSettings, fullSettings)
-	userSettings = updateDict(newSettings, userSettings)
+	updateDict(newSettings, fullSettings)
+	updateDict(newSettings, userSettings)
 	writeSettings()
 
 @eel.expose
 def resetSettings():
-	open(os.path.join(settingsDirectory, settingsFile), "w").close()
+	open(settingsFile, "w").close()
 	readSettings()
 
-os.makedirs(settingsDirectory, exist_ok=True)
-open(os.path.join(settingsDirectory, settingsFile), "a").close()
 os.makedirs(historyDirectory, exist_ok=True)
 readSettings()
 eel.start("index.html", size=(800, 600))

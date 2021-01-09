@@ -60,7 +60,9 @@ function updateInputSetting(ev) {
 		default:
 			break;
 	};
-	eel.updateSettings(inputSection);
+	eel.updateSettings(inputSection)(() => {
+		getSettings();
+	});
 }
 function getConstraint(section, key) {
 	if (section.hasOwnProperty("__" + key)) {
@@ -126,10 +128,17 @@ function createSettingsSection(section, sectionName) {
 	});
 	return (sectionName) ? sectionDiv : sectionDiv.children;
 };
+function getSettings(callback) {
+	eel.getSettings()(storedSettings => {
+		SETTINGS = storedSettings;
+		if (callback) {
+			callback();
+		};
+	});
+};
 function showSettings() {
 	settingsCont.innerHTML = "";
-	eel.readSettings()(storedSettings => {
-		SETTINGS = storedSettings;
+	getSettings(() => {
 		[...createSettingsSection(SETTINGS, "")].forEach(el => {
 			settingsCont.appendChild(el);
 		});
