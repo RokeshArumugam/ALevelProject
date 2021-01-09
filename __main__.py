@@ -211,4 +211,4 @@ def resetSettings():
 
 os.makedirs(historyDirectory, exist_ok=True)
 readSettings()
-eel.start("index.html", size=(800, 600))
+eel.start("index.html", size=(1024, 640))

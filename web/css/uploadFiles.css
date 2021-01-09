@@ -6,7 +6,6 @@ main {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-column-gap: 2em;
-	margin-bottom: 1em;
 }
 .buttonContainer a {
 	padding: 1em;
@@ -27,6 +26,7 @@ main {
 }
 .fileInputCont {
 	position: relative;
+	margin: 1em;
 	flex-grow: 1;
 	align-self: stretch;
 	border-radius: var(--borderRadius);
@@ -44,16 +44,16 @@ input[type="file"] {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	color: lightblue;
-	font-size: 1.5em;
+	color: dodgerblue;
+	font-size: 3em;
 	font-weight: bold;
-	transition-duration: 500ms;
+	transition-duration: 200ms;
 	display: grid;
 	place-items: center;
 	text-align: center;
 }
-.fileLabel:hover, .previewImageContainer:not(:empty) + .fileLabel:hover {
-	color: blue;
+.fileLabel:hover {
+	color: skyblue;
 	opacity: 1;
 }
 .previewImageContainer:not(:empty) + .fileLabel {

@@ -7,9 +7,9 @@
 	flex-direction: column;
 	align-items: stretch;
 	justify-content: space-between;
-	width: 70%;
-	min-width: 200px;
-	max-width: 500px;
+	width: 80%;
+	min-width: 250px;
+	max-width: 550px;
 }
 .menuButton {
 	height: 5em;
