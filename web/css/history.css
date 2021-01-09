@@ -1,5 +1,23 @@
 .contentCont {
+	position: relative;
 	height: calc(100% - 3.5em);
+}
+.contentCont > * {
+	width: 100%;
+	height: 100%;
+}
+.contentCont > label {
+	position: absolute;
+	left: 0;
+	top: 0;
+	font-size: 2em;
+	color: #CCC;
+	text-align: center;
+	display: grid;
+	place-items: center;
+}
+.entriesCont:not(:empty) + label {
+	display: none;
 }
 .historyEntry {
 	width: 100%;
@@ -16,7 +34,6 @@
 	--offset: 2em;
 	box-shadow: 0em var(--offset) 5px calc(0em - var(--offset)) rgba(0, 0, 0, 0.3);
 }
-/*TODO remove justify-content: center when adding image preview feature*/
 .doc {
 	justify-content: center;
 }
@@ -35,8 +52,4 @@
 }
 .docTime {
 	font-size: 0.9em;
-}
-/*TODO remove display: none when adding image preview feature*/
-.docLabel {
-	display: none;
 }

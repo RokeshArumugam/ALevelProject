@@ -13,7 +13,7 @@ main {
 	color: white;
 	text-align: center;
 	font-weight: bold;
-	transition-duration: 200ms;
+	transition: backgroundColor 200ms, transform 200ms;
 }
 .buttonContainer a:nth-child(1) {
 	grid-column: 2;

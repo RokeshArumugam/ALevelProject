@@ -56,7 +56,7 @@ function createNewDoc() {
 	
 	let label = document.createElement("label")
 	label.classList.add("docLabel")
-	label.innerText = "SAVE"
+	label.innerText = "SAVE AS"
 	label.addEventListener("click", e => {
 		eel.pickSaveLocation()(function (locs) {
 			if (locs[0]) {
@@ -78,6 +78,8 @@ function next() {
 		document.querySelectorAll(".doc label").forEach((el) => {
 			el.classList.add("visible")
 		})
+		document.querySelector("header > h1").innerText = "Pick save formats and locations"
+		newDocButton.style.visibility = "hidden";
 		pickingSaveLocations = true
 		return false
 	} else {
@@ -101,8 +103,19 @@ function validateDocs() {
 	let docs = document.querySelectorAll(".doc")
 	let saveLocations = []
 	docs.forEach(doc => {
-		let saveLocation = doc.querySelector("label").dataset.path
 		doc.classList.remove("error")
+		if (!(doc.querySelector("label").dataset.path)) {
+			valid = false
+			doc.classList.add("error")
+		}
+	})
+	if (!valid) {
+		errorMsg += "You haven't picked save locations for some documents. They are highlighted. Please pick save locations for them and try again."
+		alert(errorMsg)
+		return valid
+	}
+	docs.forEach(doc => {
+		let saveLocation = doc.querySelector("label").dataset.path
 		if (saveLocations.includes(saveLocation)) {
 			valid = false
 			doc.classList.add("error")
@@ -111,8 +124,9 @@ function validateDocs() {
 		saveLocations.push(saveLocation)
 	})
 	if (!valid) {
-		errorMsg += "You're trying to save multiple documents to the same location. They are highlighted. Please pick different save locations for them."
+		errorMsg += "You're trying to save multiple documents to the same location. They are highlighted. Please pick different save locations for them and try again."
 		alert(errorMsg)
+		return valid
 	}
 	return valid
 }

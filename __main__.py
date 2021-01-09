@@ -55,7 +55,7 @@ def saveFile(filename, contents):
 	except:
 		ext = defaultFileExtension
 	ext = ext.upper()
-	prefs = fullSettings["document"].get(defaultSettings["__extToType"][ext], {})
+	prefs = fullSettings["document"].get(defaultSettings["__extToType"].get(ext), {})
 	if ext == "DOCX":
 		wordDoc = docx.Document()
 		for para in contents.split("\n\n"):
@@ -107,10 +107,6 @@ def inputDocuments(docs):
 
 @eel.expose
 def convertDocuments():
-	try:
-		shutil.rmtree(toConvertDirectory)
-	except:
-		pass
 	os.chdir(toConvertDirectory)
 	docs = os.listdir(".")
 	eel.setOverallProgressBarTotal(len(docs))

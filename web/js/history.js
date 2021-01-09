@@ -1,4 +1,4 @@
-let entriesCont = document.querySelector(".contentCont")
+let entriesCont = document.querySelector(".entriesCont")
 
 function showHistory() {
 	entriesCont.innerHTML = ""
@@ -18,14 +18,6 @@ function showHistory() {
 				divDocImgCont.appendChild(img)
 			})
 			divDoc.appendChild(divDocImgCont)
-
-			let label = document.createElement("label")
-			label.classList.add("docLabel", "visible")
-			label.innerText = "VIEW"
-			label.addEventListener("click", e => {
-				//TODO add preview image feature
-			})
-			divDoc.appendChild(label)
 			entryDiv.appendChild(divDoc)
 			
 			let divDocInfo = document.createElement("div")
