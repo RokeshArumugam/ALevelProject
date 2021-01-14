@@ -2,7 +2,6 @@ let newDocButton = document.querySelector("#createNewDoc")
 let nextButton = document.querySelector("#next")
 let fileInput = document.querySelector("#fileInput")
 let previewCont = document.querySelector(".previewImageContainer")
-let docs = []
 let pickingSaveLocations = false
 
 previewCont.addEventListener("DOMSubtreeModified", e => {
@@ -85,10 +84,11 @@ function next() {
 	} else {
 		let valid = validateDocs()
 		if (valid) {
+			let docs = []
 			document.querySelectorAll(".doc").forEach((doc) => {
 				let newDocImgs = []
 				doc.querySelectorAll("img").forEach((img) => {
-					newDocImgs.push([img.dataset.ext, img.src])
+					newDocImgs.push(img.src)
 				})
 				docs.push([doc.querySelector("label").dataset.path, newDocImgs])
 			})

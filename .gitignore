@@ -1,6 +1,5 @@
 venv/
 __pycache__/
 settings.json
-history/
-toConvert/
+data.db
 Design/output/
