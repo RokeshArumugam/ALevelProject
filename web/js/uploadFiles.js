@@ -23,7 +23,6 @@ function inputFile() {
 		freader.onload = function() {
 			let img = document.createElement("img")
 			img.src = this.result
-			img.dataset.ext = file.name.split(".").pop()
 			previewCont.appendChild(img)
 		}
 		freader.readAsDataURL(file)

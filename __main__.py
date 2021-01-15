@@ -1,10 +1,13 @@
-import os, eel, glob, base64, json, copy, time, contextlib
-import sqlite3 as sl
+import contextlib, copy, json, os, time
 from datetime import datetime
+import sqlite3 as sl
 from tkinter import Tk
 from tkinter.filedialog import asksaveasfilename
-import ai, docx
+
+import docx, eel
 from fpdf import FPDF
+
+import ai
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 eel.init("web")
@@ -40,6 +43,7 @@ defaultSettings = {
 
 def initDatabase():
 	with contextlib.closing(sl.connect(databaseFile)) as con:
+		con.execute("PRAGMA foreign_keys = 1")
 		with con:
 			with contextlib.closing(con.cursor()) as cur:
 				cur.execute("""
@@ -54,15 +58,11 @@ def initDatabase():
 						id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 						document_id INTEGER NOT NULL,
 						position INTEGER,
-						data TEXT,
-						filetype TEXT,
-						FOREIGN KEY(document_id) REFERENCES document(id)
+						uri TEXT,
+						FOREIGN KEY(document_id) REFERENCES document(id) ON DELETE CASCADE
 					)
 				""")
 				cur.execute("DELETE FROM document WHERE creation_time IS Null")
-
-def constructDataURI(data, filetype):
-	return f"data:image/{filetype};base64,{data}"
 
 def saveFile(filepath, contents):
 	try:
@@ -106,7 +106,7 @@ def inputDocuments(docs):
 				with contextlib.closing(con.cursor()) as cur:
 					cur.execute("INSERT INTO document (save_location) VALUES (?)", (saveLoc,))
 					docId = cur.lastrowid
-					cur.executemany("INSERT INTO image (document_id, position, data, filetype) VALUES (?, ?, ?, ?)", [(docId, pos, imgData.split("base64,")[1], imgData.split('/')[1].split(';')[0]) for pos, imgData in enumerate(imgs)])
+					cur.executemany("INSERT INTO image (document_id, position, uri) VALUES (?, ?, ?)", [(docId, pos, uri) for pos, uri in enumerate(imgs)])
 
 @eel.expose
 def convertDocuments():
@@ -121,16 +121,16 @@ def convertDocuments():
 			eel.setOverallProgressMsg(f"Converting {docName}...")
 			
 			with contextlib.closing(con.cursor()) as cur:
-				imgs = cur.execute(f"SELECT data, filetype FROM image WHERE document_id={docId} ORDER BY position").fetchall()
+				imgs = cur.execute(f"SELECT uri FROM image WHERE document_id={docId} ORDER BY position").fetchall()
 			
 			text = ""
 			eel.setConvertedText(text)
 			eel.setDocProgressBarCompleted(0)
 			eel.setDocProgressBarTotal(len(imgs))
 			
-			for imgsCompleted, (imgData, imgFiletype) in enumerate(imgs):
-				eel.setInputImg(constructDataURI(imgData, imgFiletype))
-				text += ai.readText(imgData)
+			for imgsCompleted, (imgURI,) in enumerate(imgs):
+				eel.setInputImg(imgURI)
+				text += ai.readText(imgURI.split("base64,")[1])
 				eel.setConvertedText(text)
 				eel.setDocProgressBarCompleted(imgsCompleted + 1)
 			
@@ -150,23 +150,20 @@ def readHistory():
 	entries = []
 	with contextlib.closing(sl.connect(databaseFile)) as con:
 		with contextlib.closing(con.cursor()) as cur:
-			docs = cur.execute("SELECT id, save_location, creation_time FROM document ORDER BY creation_time DESC").fetchall()
-		for docId, saveLoc, docTime in docs:
-			entry = []
-			entry.append([os.path.basename(saveLoc), datetime.fromtimestamp(float(docTime)).strftime("%d %b %Y %H:%M:%S")])
-			
-			with contextlib.closing(con.cursor()) as cur:
-				entry.append([constructDataURI(data, filetype) for data, filetype in cur.execute(f"SELECT data, filetype FROM image WHERE document_id={docId} ORDER BY position").fetchall()])
-			entries.append(entry)
+			for docId, saveLoc, docTime in cur.execute("SELECT id, save_location, creation_time FROM document ORDER BY creation_time DESC").fetchall():
+				entries.append([
+						[os.path.basename(saveLoc), datetime.fromtimestamp(float(docTime)).strftime("%d %b %Y %H:%M:%S")],
+						[uri for uri, in cur.execute(f"SELECT uri FROM image WHERE document_id={docId} ORDER BY position").fetchall()]
+				])
 	return entries
 
 @eel.expose
 def clearHistory():
 	with contextlib.closing(sl.connect(databaseFile)) as con:
+		con.execute("PRAGMA foreign_keys = 1")
 		with con:
 			with contextlib.closing(con.cursor()) as cur:
 				cur.execute("DELETE FROM document")
-				cur.execute("DELETE FROM image")
 
 def readSettings():
 	global fullSettings, userSettings

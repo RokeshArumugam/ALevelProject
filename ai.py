@@ -1,4 +1,6 @@
-import cv2, pytesseract, re, base64
+import re
+
+import cv2, pytesseract
 import numpy as np
 
 def readText(imgData):
@@ -6,7 +8,7 @@ def readText(imgData):
 	# pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 	
 	# Read image from base64 string
-	nparr = np.fromstring(base64.b64decode(imgData), np.uint8)
+	nparr = np.fromstring(imgData.decode("base64"), np.uint8)
 	img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 	
 	# Run tesseract OCR on image
