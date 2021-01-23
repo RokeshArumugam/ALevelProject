@@ -17,17 +17,19 @@ previewCont.addEventListener("DOMSubtreeModified", e => {
 	}
 })
 
-function inputFile() {
-	for (let file of fileInput.files) {
-		let freader = new FileReader()
-		freader.onload = function() {
-			let img = document.createElement("img")
-			img.src = this.result
-			previewCont.appendChild(img)
+function inputFile(fileNum) {
+	let freader = new FileReader()
+	freader.onload = function() {
+		let img = document.createElement("img")
+		img.src = this.result
+		previewCont.appendChild(img)
+		if (fileNum != (fileInput.files.length - 1)) {
+			inputFile(fileNum + 1)
+		} else {
+			fileInput.value = ""
 		}
-		freader.readAsDataURL(file)
 	}
-	fileInput.value = ""
+	freader.readAsDataURL(fileInput.files[fileNum])
 }
 function createNewDoc() {
 	if (newDocButton.classList.contains("disabled")) {

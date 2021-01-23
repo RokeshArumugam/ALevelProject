@@ -15,7 +15,7 @@ eel.init("web")
 databaseFile = "data.db"
 settingsFile = "settings.json"
 defaultFileExtension = "txt"
-supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("Portable Document Format (PDF)", "*.pdf"), ("All files", "*.*"))
+supportedFileTypes = (("Text files", "*.txt"), ("Microsoft Word documents", "*.docx"), ("Portable Document Format (PDF)", "*.pdf"))
 
 fullSettings = {}
 userSettings = {}
@@ -96,6 +96,10 @@ def pickSaveLocation():
 	loc = asksaveasfilename(title = "Choose save location", filetypes = supportedFileTypes)
 	root.update()
 	root.destroy()
+	if not loc:
+		return
+	if "." not in os.path.basename(loc):
+		loc += f".{defaultFileExtension}"
 	return loc, os.path.basename(loc)
 
 @eel.expose

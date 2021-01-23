@@ -1,3 +1,4 @@
+let globalIdCounter = 0;
 let settingsCont = document.querySelector(".contentCont");
 let SETTINGS = {};
 
@@ -19,7 +20,7 @@ function getInputValue(input) {
 function updateInputSetting(ev) {
 	let el = ev.target;
 	let inputType = el.type;
-	let inputKey = el.id;
+	let inputKey = el.dataset.key;
 	let inputValue = getInputValue(el);
 	let immediateInputSection = {[inputKey]: inputValue};
 	let inputSection = immediateInputSection;
@@ -27,9 +28,9 @@ function updateInputSetting(ev) {
 	if ((!inputValue && (inputValue != false)) || (inputType == "number" && isNaN(inputValue))) return
 	
 	el = el.parentElement;
-	while (el.parentElement.hasAttribute("id")) {
+	while (el.parentElement.hasAttribute("data-key")) {
 		el = el.parentElement;
-		inputSection = {[el.id]: inputSection}
+		inputSection = {[el.dataset.key]: inputSection}
 	};
 	
 	let tempInputSection = inputSection;
@@ -57,6 +58,13 @@ function updateInputSetting(ev) {
 				immediateInputSection[inputKey] = max;
 			};
 			break;
+		case "select-one":
+			let allowed = getConstraint(section, inputKey + "Allowed");
+			if (!allowed.includes(inputValue)) {
+				ev.target.value = allowed[0];
+				immediateInputSection[inputKey] = allowd[0];
+			};
+			break;
 		default:
 			break;
 	};
@@ -71,13 +79,19 @@ function getConstraint(section, key) {
 		return SETTINGS["__constraints"][key]
 	}
 }
+function createID() {
+	globalIdCounter++;
+	return "gen" + globalIdCounter
+}
 function createSetting(section, key) {
+	let id = createID();
+	
 	let settingDiv = document.createElement("div");
 	settingDiv.classList.add("settingDiv");
 
 	let label = document.createElement("label");
 	label.classList.add("settingLabel");
-	label.setAttribute("for", key);
+	label.setAttribute("for", id);
 	label.innerText = camelToSentence(key);
 	settingDiv.appendChild(label);
 
@@ -110,14 +124,15 @@ function createSetting(section, key) {
 	input.value = section[key];
 	input.addEventListener("change", updateInputSetting);
 	input.classList.add("settingInput");
-	input.id = key;
+	input.id = id;
+	input.dataset.key = key;
 	settingDiv.appendChild(input);
 	return settingDiv;
 };
 function createSettingsSection(section, sectionName) {
 	let sectionDiv = document.createElement("div");
 	sectionDiv.classList.add("settingsSection");
-	sectionDiv.id = sectionName;
+	sectionDiv.dataset.key = sectionName;
 	sectionDiv.setAttribute("title", camelToSentence(sectionName));
 	Object.keys(section).filter(key => {return !key.startsWith("__")}).forEach(key => {
 		if (typeof section[key] == "object") {

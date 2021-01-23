@@ -14,8 +14,8 @@ def readText(imgData):
 	# Run tesseract OCR on image
 	# '-l eng'	  for using the English language
 	# '--oem 1' for using LSTM OCR Engine
-	return formatText(pytesseract.image_to_string(img, config=('-l eng --oem 1 --psm 3'))[:-1])
+	return formatText(pytesseract.image_to_string(img, config=('-l eng --oem 1 --psm 3')))
 
 def formatText(text):
-	text = re.sub(r"([^.!?\n])\n([^\n])", r"\1 \2", text)
+	text = re.sub(r"([^.!?\n])\n([^\n])", r"\1 \2", text[:-1])
 	return text
