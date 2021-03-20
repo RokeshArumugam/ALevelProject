@@ -1,2 +1,0 @@
-Resize Next button to 2/3 of its' size
-Put box shadow on the inside of file input
