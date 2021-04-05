@@ -1,5 +1,5 @@
 eel==0.14.0
-opencv-python==4.4.0.46
+opencv-python==4.5.1.48
 easyocr==1.2.5.1
 python-docx==0.8.10
 fpdf==1.7.2
